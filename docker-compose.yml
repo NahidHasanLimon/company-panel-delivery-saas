@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -10,10 +8,22 @@ services:
       - app_node_modules:/app/node_modules # Mount a named volume for node_modules
     ports:
       - "5173:5173"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=development
       - VITE_FORCE_POLLING=true
       - CHOKIDAR_USEPOLLING=true
+      # Explicitly pass Firebase environment variables
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+      - VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}
+      - VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN}
+      - VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID}
+      - VITE_FIREBASE_STORAGE_BUCKET=${VITE_FIREBASE_STORAGE_BUCKET}
+      - VITE_FIREBASE_MESSAGING_SENDER_ID=${VITE_FIREBASE_MESSAGING_SENDER_ID}
+      - VITE_FIREBASE_APP_ID=${VITE_FIREBASE_APP_ID}
+      - VITE_FIREBASE_MEASUREMENT_ID=${VITE_FIREBASE_MEASUREMENT_ID}
+      - VITE_FIREBASE_VAPID_KEY=${VITE_FIREBASE_VAPID_KEY}
     command: npm run dev -- --host
 
   prod:
@@ -21,7 +31,9 @@ services:
       context: .
       target: production
     ports:
-      - "80:80"
+      - "8080:80"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
     # For a typical SPA, the 'prod' service serves static files

@@ -104,35 +104,35 @@
     <div class="transition-all duration-300 ease-in-out" :class="sidebarOpen && !sidebarCollapsed ? 'lg:pl-64' : sidebarOpen && sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-0'">
       <!-- Header -->
       <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
-        <div class="flex items-center justify-between px-4 lg:px-6 py-4">
+        <div class="flex items-center justify-between px-4 lg:px-6 py-2">
           <div class="flex items-center space-x-4">
             <!-- Mobile Sidebar Toggle -->
             <button
               @click="toggleSidebar"
-              class="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="lg:hidden p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <Menu class="w-5 h-5" />
             </button>
             <!-- Desktop Sidebar Toggle -->
             <button
               @click="toggleSidebarCollapse"
-              class="hidden lg:flex p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="hidden lg:flex p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               :title="sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
             >
               <PanelLeftOpen v-if="sidebarCollapsed" class="w-5 h-5" />
               <PanelLeftClose v-else class="w-5 h-5" />
             </button>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ getPageTitle() }}</h2>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ getPageDescription() }}</p>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ getPageTitle() }}</h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400">{{ getPageDescription() }}</p>
             </div>
           </div>
           
-          <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-2">
             <!-- Dark Mode Toggle -->
             <button
               @click="toggleDarkMode"
-              class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
             >
               <Sun v-if="isDarkMode" class="w-5 h-5" />
@@ -143,10 +143,10 @@
             <div class="relative" data-dropdown="notifications">
               <button 
                 @click="toggleNotifications"
-                class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 relative"
+                class="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 relative"
               >
                 <Bell class="w-5 h-5" />
-                <span v-if="unreadNotifications > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                <span v-if="unreadNotifications > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
                   {{ unreadNotifications > 9 ? '9+' : unreadNotifications }}
                 </span>
               </button>
@@ -185,9 +185,9 @@
             <div class="relative" data-dropdown="user">
               <button 
                 @click="toggleUserMenu"
-                class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
+                <div class="w-7 h-7 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
                   <User class="w-4 h-4 text-white" />
                 </div>
                 <div class="hidden md:block text-left">
@@ -268,6 +268,7 @@ import {
   AlertCircle,
   CheckCircle
 } from 'lucide-vue-next'
+import { useNotificationStore } from '../stores/notification'
 
 export default {
   name: 'DashboardLayout',
@@ -293,6 +294,11 @@ export default {
     AlertCircle,
     CheckCircle
   },
+  setup() {
+    // Import notification store
+    const notificationStore = useNotificationStore()
+    return { notificationStore }
+  },
   data() {
     return {
       sidebarOpen: true, // Default to expanded
@@ -300,46 +306,15 @@ export default {
       isDarkMode: false,
       showNotifications: false,
       showUserMenu: false,
-      isMobile: false,
-      notifications: [
-        {
-          id: 1,
-          type: 'delivery',
-          title: 'New Delivery Assigned',
-          message: 'Delivery DEL-001 has been assigned to John Martinez',
-          time: new Date(Date.now() - 5 * 60 * 1000),
-          read: false
-        },
-        {
-          id: 2,
-          type: 'customer',
-          title: 'New Customer Registration',
-          message: 'Alice Johnson has registered as a new customer',
-          time: new Date(Date.now() - 15 * 60 * 1000),
-          read: false
-        },
-        {
-          id: 3,
-          type: 'delivery',
-          title: 'Delivery Completed',
-          message: 'Delivery DEL-003 has been completed successfully',
-          time: new Date(Date.now() - 30 * 60 * 1000),
-          read: true
-        },
-        {
-          id: 4,
-          type: 'alert',
-          title: 'Delivery Delayed',
-          message: 'Delivery DEL-005 is running 15 minutes behind schedule',
-          time: new Date(Date.now() - 45 * 60 * 1000),
-          read: false
-        }
-      ]
+      isMobile: false
     }
   },
   computed: {
     unreadNotifications() {
-      return this.notifications.filter(n => !n.read).length
+      return this.notificationStore.unreadCount
+    },
+    notifications() {
+      return this.notificationStore.notifications
     }
   },
   mounted() {
@@ -462,15 +437,10 @@ export default {
       }
     },
     markAsRead(notificationId) {
-      const notification = this.notifications.find(n => n.id === notificationId)
-      if (notification) {
-        notification.read = true
-      }
+      this.notificationStore.markAsRead(notificationId)
     },
     markAllAsRead() {
-      this.notifications.forEach(notification => {
-        notification.read = true
-      })
+      this.notificationStore.markAllAsRead()
     },
     getNotificationIcon(type) {
       const icons = {
