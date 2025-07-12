@@ -1,9 +1,11 @@
 import { messaging, getToken, onMessage } from '../firebase/config'
+import { useToastStore } from '../stores/toast'
 
 class NotificationService {
   constructor() {
     this.vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
     this.token = null
+    this.toastStore = null
     
     // Debug: Log ALL environment variables for troubleshooting
     console.log('All Vite env vars:', import.meta.env)
@@ -83,9 +85,27 @@ class NotificationService {
     onMessage(messaging, (payload) => {
       console.log('Message received in foreground:', payload)
       
-      // Show notification when app is in foreground
-      this.showNotification(payload)
+      // Initialize toast store if not already done
+      if (!this.toastStore) {
+        this.toastStore = useToastStore()
+      }
+      
+      // Show toast notification when app is in foreground
+      this.showToastNotification(payload)
+      
+      // Note: When tab is not active, Firebase automatically uses the service worker
+      // and onBackgroundMessage will handle it instead of this listener
     })
+  }
+
+  // Show toast notification
+  showToastNotification(payload) {
+    const { title, body } = payload.notification || {}
+    const message = title && body ? `${title}: ${body}` : title || body || 'New notification'
+    
+    if (this.toastStore) {
+      this.toastStore.notification(title, body, 6000)
+    }
   }
 
   // Show browser notification
@@ -124,14 +144,25 @@ class NotificationService {
     if ('serviceWorker' in navigator) {
       try {
         // Register service worker
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+          scope: '/'
+        })
         console.log('Service Worker registered:', registration)
         
-        // Request permission and get token
-        await this.requestPermission()
+        // Wait for service worker to be ready
+        await navigator.serviceWorker.ready
+        console.log('Service Worker is ready')
         
-        // Setup foreground message listener
-        this.setupForegroundMessageListener()
+        // Request permission and get token
+        const token = await this.requestPermission()
+        
+        if (token) {
+          // Setup foreground message listener
+          this.setupForegroundMessageListener()
+          
+          // Test service worker communication
+          this.testServiceWorker()
+        }
         
         return true
       } catch (error) {
@@ -141,6 +172,15 @@ class NotificationService {
     } else {
       console.log('Service Worker not supported')
       return false
+    }
+  }
+
+  // Test service worker
+  testServiceWorker() {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      console.log('Service worker is active and controlling the page')
+    } else {
+      console.warn('Service worker is not controlling the page')
     }
   }
 

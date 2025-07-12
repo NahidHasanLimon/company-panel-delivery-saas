@@ -19,9 +19,9 @@ const messaging = firebase.messaging()
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload)
   
-  const notificationTitle = payload.notification.title
+  const notificationTitle = payload.notification?.title || 'New Notification'
   const notificationOptions = {
-    body: payload.notification.body,
+    body: payload.notification?.body || 'You have a new message',
     icon: '/icon-192x192.png', // You can add your app icon here
     badge: '/badge-72x72.png', // You can add your badge icon here
     tag: payload.data?.tag || 'delivery-notification',
@@ -41,7 +41,9 @@ messaging.onBackgroundMessage((payload) => {
     ]
   }
 
-  self.registration.showNotification(notificationTitle, notificationOptions)
+  console.log('[firebase-messaging-sw.js] Showing notification:', notificationTitle, notificationOptions)
+  
+  return self.registration.showNotification(notificationTitle, notificationOptions)
 })
 
 // Handle notification clicks

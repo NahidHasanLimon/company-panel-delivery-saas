@@ -106,3 +106,10 @@ export const fetchCompanyDeliverymen = async () => {
     throw error
   }
 }
+
+// Export aliases for compatibility
+export const getCompanyAddresses = fetchCompanyAddresses
+export const getCompanyItems = fetchCompanyItems
+export const getCompanyCustomers = fetchCompanyCustomers
+export const getCustomerAddresses = fetchCustomerAddresses
+export const getCompanyDeliverymen = fetchCompanyDeliverymen

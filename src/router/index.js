@@ -4,6 +4,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Deliverymen from '../views/Deliverymen.vue'
 import Customers from '../views/Customers.vue'
 import Deliveries from '../views/Deliveries.vue'
+import CreateDelivery from '../views/CreateDelivery.vue'
 import Analytics from '../views/Analytics.vue'
 import Profile from '../views/Profile.vue'
 import Login from '../views/Login.vue'
@@ -37,6 +38,11 @@ const routes = [
         path: '/deliveries',
         name: 'Deliveries',
         component: Deliveries
+      },
+      {
+        path: '/deliveries/create',
+        name: 'CreateDelivery',
+        component: CreateDelivery
       },
       {
         path: '/analytics',

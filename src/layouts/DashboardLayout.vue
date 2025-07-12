@@ -103,7 +103,7 @@
     <!-- Main Content -->
     <div class="transition-all duration-300 ease-in-out" :class="sidebarOpen && !sidebarCollapsed ? 'lg:pl-64' : sidebarOpen && sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-0'">
       <!-- Header -->
-      <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
+      <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <div class="flex items-center justify-between px-4 lg:px-6 py-2">
           <div class="flex items-center space-x-4">
             <!-- Mobile Sidebar Toggle -->
@@ -376,6 +376,7 @@ export default {
       const titles = {
         'Dashboard': 'Dashboard',
         'Deliveries': 'Deliveries',
+        'CreateDelivery': 'Create New Delivery',
         'Deliverymen': 'Delivery Personnel',
         'Customers': 'Customers',
         'Analytics': 'Analytics',
@@ -387,6 +388,7 @@ export default {
       const descriptions = {
         'Dashboard': 'Overview of your delivery operations',
         'Deliveries': 'Track and manage all deliveries',
+        'CreateDelivery': 'Fill in the delivery details below',
         'Deliverymen': 'Manage your delivery team',
         'Customers': 'Manage your customer database',
         'Analytics': 'Performance insights and reports',

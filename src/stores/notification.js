@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import notificationService from '../services/notificationService'
+import { useToastStore } from './toast'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
