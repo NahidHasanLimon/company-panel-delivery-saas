@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-4 right-4 z-50 space-y-2">
+  <div class="fixed top-4 right-4 z-50 space-y-2">
     <div
       v-for="toast in toasts"
       :key="toast.id"
@@ -7,7 +7,7 @@
         'max-w-sm px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out',
         'flex items-center space-x-3 border',
         toastClasses[toast.type],
-        toast.show ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+        toast.show ? 'translate-x-0' : 'translate-x-full'
       ]"
     >
       <!-- Icon -->

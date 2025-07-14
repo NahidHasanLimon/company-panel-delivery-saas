@@ -35,12 +35,9 @@ export const fetchCompanyAddresses = async () => {
   }
 }
 
-// Fetch company items with pagination
-export const fetchCompanyItems = async (page = 1, search = '') => {
+// Fetch company items with pagination and search
+export const fetchCompanyItems = async (params = {}) => {
   try {
-    const params = { page }
-    if (search) params.search = search
-    
     const response = await apiClient.get('/api/company/items', { params })
     return response.data
   } catch (error) {
@@ -85,10 +82,13 @@ export const validateItem = async (name, code) => {
   }
 }
 
-// Fetch company customers
-export const fetchCompanyCustomers = async () => {
+// Fetch company customers with pagination and search
+export const fetchCompanyCustomers = async (page = 1, search = '') => {
   try {
-    const response = await apiClient.get('/api/company/customers')
+    const params = { page }
+    if (search) params.name = search
+    
+    const response = await apiClient.get('/api/company/customers', { params })
     return response.data
   } catch (error) {
     console.error('Error fetching company customers:', error)

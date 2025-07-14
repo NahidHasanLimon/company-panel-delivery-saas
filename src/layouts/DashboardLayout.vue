@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+  <div class="h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-200" style="overscroll-behavior: none; -webkit-overflow-scrolling: touch;">
     <!-- Sidebar -->
     <div 
       class="fixed inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 shadow-lg transform transition-all duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700"
@@ -101,10 +101,18 @@
       </nav>
     </div>
     <!-- Main Content -->
-    <div class="transition-all duration-300 ease-in-out" :class="sidebarOpen && !sidebarCollapsed ? 'lg:pl-64' : sidebarOpen && sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-0'">
+    <div 
+      class="h-screen overflow-hidden transition-all duration-300 ease-in-out flex flex-col"
+      :class="[
+        isMobile
+          ? 'lg:pl-0'
+          : (sidebarCollapsed ? 'pl-20' : 'pl-64')
+      ]"
+      style="overscroll-behavior: none;"
+    >
       <!-- Header -->
-      <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
-        <div class="flex items-center justify-between px-4 lg:px-6 py-2">
+      <header class="flex-shrink-0 sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
+        <div class="flex items-center justify-between px-4 lg:px-6 py-4">
           <div class="flex items-center space-x-4">
             <!-- Mobile Sidebar Toggle -->
             <button
@@ -231,7 +239,7 @@
       </header>
 
       <!-- Page Content -->
-      <main class="p-4 lg:p-6">
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6" style="height: calc(100vh - 80px); overscroll-behavior: contain; -webkit-overflow-scrolling: touch;">
         <router-view />
       </main>
     </div>
