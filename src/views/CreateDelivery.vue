@@ -31,10 +31,9 @@
                     class="inline-flex items-center px-2 py-1 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-medium rounded hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-red-200 dark:border-red-800"
                     title="Clear selection and enter manually"
                   >
-                    <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
-                    Clear
                   </button>
                   <button
                     type="button"
@@ -232,21 +231,8 @@
                 <div 
                   v-for="(item, index) in formData.items" 
                   :key="`item-${index}`"
-                  class="p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50 relative"
+                  class="p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50"
                 >
-                  <!-- Remove item button -->
-                  <button 
-                    v-if="formData.items.length > 1"
-                    type="button"
-                    @click="removeItem(index)"
-                    class="absolute top-2 right-2 p-1 text-red-400 hover:text-red-600 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 z-10"
-                    title="Remove item"
-                  >
-                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                  </button>
-
                   <!-- Item header -->
                   <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center">
@@ -263,10 +249,9 @@
                         class="inline-flex items-center px-1.5 py-0.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-medium rounded hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-red-200 dark:border-red-800"
                         title="Clear selection and enter manually"
                       >
-                        <svg class="h-2.5 w-2.5 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
-                        Clear
                       </button>
                       <button
                         type="button"
@@ -278,6 +263,17 @@
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v2M7 7h10"></path>
                         </svg>
                         {{ item.isLocked ? 'Change' : 'Catalog' }}
+                      </button>
+                      <button 
+                        v-if="formData.items.length > 1"
+                        type="button"
+                        @click="removeItem(index)"
+                        class="inline-flex items-center px-1.5 py-0.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-medium rounded hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-red-200 dark:border-red-800"
+                        title="Remove item"
+                      >
+                        <svg class="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
                       </button>
                     </div>
                   </div>
@@ -375,6 +371,81 @@
               </h2>
               
               <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Assign Deliveryman</label>
+                  <div class="relative">
+                    <button 
+                      type="button"
+                      @click="toggleDeliverymanDropdown"
+                      class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white cursor-pointer flex items-center justify-between"
+                      :class="{ 'ring-1 ring-blue-500 border-blue-500': showDeliverymanDropdown }"
+                    >
+                      <span class="text-left flex-1" :class="{ 'text-gray-500 dark:text-gray-400': !selectedDeliverymanLabel }">
+                        {{ selectedDeliverymanLabel || 'Select a deliveryman (optional)' }}
+                      </span>
+                      <svg 
+                        class="h-4 w-4 text-gray-400 transition-transform"
+                        :class="{ 'rotate-180': showDeliverymanDropdown }"
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    </button>
+                    
+                    <!-- Dropdown -->
+                    <div 
+                      v-if="showDeliverymanDropdown"
+                      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-hidden"
+                    >
+                      <!-- Search input inside dropdown -->
+                      <div class="p-2 border-b border-gray-200 dark:border-gray-600">
+                        <input 
+                          v-model="deliverymanSearch"
+                          @input="searchDeliverymen"
+                          type="text"
+                          class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                          placeholder="Search by name or mobile..."
+                          ref="deliverymanSearchInput"
+                        >
+                      </div>
+                      
+                      <!-- Options container -->
+                      <div class="max-h-40 overflow-y-auto">
+                        <div v-if="isLoadingDeliverymen" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                          Searching...
+                        </div>
+                        <div v-else-if="filteredDeliverymen.length === 0 && deliverymanSearch" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                          No deliverymen found
+                        </div>
+                        <div v-else>
+                          <!-- Clear selection option -->
+                          <button
+                            v-if="formData.deliveryManId"
+                            type="button"
+                            @click="clearDeliverymanSelection"
+                            class="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border-b border-gray-200 dark:border-gray-700"
+                          >
+                            Clear selection
+                          </button>
+                          <!-- Deliveryman options -->
+                          <button
+                            v-for="deliveryman in filteredDeliverymen"
+                            :key="deliveryman.id"
+                            type="button"
+                            @click="selectDeliveryman(deliveryman)"
+                            class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
+                            :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': formData.deliveryManId === deliveryman.id }"
+                          >
+                            <div class="font-medium">{{ deliveryman.name }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">{{ deliveryman.mobile_no }}</div>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Type</label>
                   <select 
@@ -888,6 +959,7 @@ import {
   getCompanyItems, 
   getCompanyCustomers, 
   getCustomerAddresses,
+  getCompanyDeliverymen,
   createDelivery as apiCreateDelivery
 } from '../api/delivery'
 
@@ -931,6 +1003,11 @@ export default {
       companyItems: [],
       companyCustomers: [],
       customerAddresses: [],
+      deliverymen: [],
+      deliverymanSearch: '',
+      filteredDeliverymen: [],
+      showDeliverymanDropdown: false,
+      isLoadingDeliverymen: false,
       
       // Modal editing state
       currentEditingItemIndex: null,
@@ -954,6 +1031,7 @@ export default {
         orderTrackingNo: '',
         amount: '',
         priority: 'medium',
+        deliveryManId: '',
         deliveryNotes: '',
         items: [this.createEmptyItem()]
       }
@@ -995,6 +1073,12 @@ export default {
     },
     hasDropAddressSelected() {
       return this.formData.dropAddressId !== null && this.formData.dropAddressId !== ''
+    },
+    selectedDeliverymanLabel() {
+      if (!this.formData.deliveryManId) return ''
+      
+      const selected = this.deliverymen.find(d => d.id === this.formData.deliveryManId)
+      return selected ? `${selected.name} || ${selected.mobile_no}` : ''
     },
   },
   watch: {
@@ -1345,6 +1429,80 @@ export default {
       }
     },
     
+    async loadCompanyDeliverymen() {
+      try {
+        const response = await getCompanyDeliverymen()
+        if (response && response.success) {
+          this.deliverymen = response.data || []
+          this.filteredDeliverymen = this.deliverymen
+        } else {
+          this.deliverymen = []
+          this.filteredDeliverymen = []
+        }
+      } catch (error) {
+        console.error('Error loading deliverymen:', error)
+        this.deliverymen = []
+        this.filteredDeliverymen = []
+      }
+    },
+    
+    // Deliveryman methods
+    toggleDeliverymanDropdown() {
+      this.showDeliverymanDropdown = !this.showDeliverymanDropdown
+      if (this.showDeliverymanDropdown) {
+        if (!this.deliverymen.length) {
+          this.loadCompanyDeliverymen()
+        }
+        // Focus search input when dropdown opens
+        this.$nextTick(() => {
+          if (this.$refs.deliverymanSearchInput) {
+            this.$refs.deliverymanSearchInput.focus()
+          }
+        })
+      }
+    },
+    
+    async searchDeliverymen() {
+      if (!this.deliverymen.length) {
+        await this.loadCompanyDeliverymen()
+      }
+      
+      this.isLoadingDeliverymen = true
+      
+      try {
+        const search = this.deliverymanSearch.toLowerCase()
+        if (!search) {
+          this.filteredDeliverymen = this.deliverymen
+        } else {
+          this.filteredDeliverymen = this.deliverymen.filter(deliveryman => 
+            deliveryman.name.toLowerCase().includes(search) ||
+            deliveryman.mobile_no.includes(search)
+          )
+        }
+      } finally {
+        this.isLoadingDeliverymen = false
+      }
+    },
+    
+    selectDeliveryman(deliveryman) {
+      this.formData.deliveryManId = deliveryman.id
+      this.deliverymanSearch = '' // Clear search after selection
+      this.showDeliverymanDropdown = false
+    },
+    
+    clearDeliverymanSelection() {
+      this.formData.deliveryManId = ''
+      this.deliverymanSearch = ''
+      this.showDeliverymanDropdown = false
+    },
+    
+    handleOutsideClick(event) {
+      // Close deliveryman dropdown if clicking outside
+      if (!this.$el.contains(event.target)) {
+        this.showDeliverymanDropdown = false
+      }
+    },
+    
     // Form submission
     async createDelivery() {
       if (this.isSubmitting) return
@@ -1444,6 +1602,11 @@ export default {
         payload.priority = this.formData.priority
         payload.delivery_notes = this.formData.deliveryNotes
         
+        // Add deliveryman if selected
+        if (this.formData.deliveryManId) {
+          payload.delivery_man_id = this.formData.deliveryManId
+        }
+        
         await apiCreateDelivery(payload)
         
         // Success - show success toast and redirect
@@ -1463,6 +1626,14 @@ export default {
     // Only load customers on mount since they're needed for the customer modal
     // Addresses and items will be loaded when their respective modals are opened
     await this.loadCompanyCustomers()
-  }
+    // Load deliverymen for the dropdown
+    await this.loadCompanyDeliverymen()
+    
+    // Add click outside handler for deliveryman dropdown
+    document.addEventListener('click', this.handleOutsideClick)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleOutsideClick)
+  },
 }
 </script>

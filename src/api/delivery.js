@@ -1,28 +1,4 @@
-import axios from 'axios'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-
-// Get auth token from localStorage
-const getAuthToken = () => {
-  return localStorage.getItem('access_token')
-}
-
-// Create axios instance with auth header
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-apiClient.interceptors.request.use(config => {
-  const token = getAuthToken()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+import apiClient from './client'
 
 // Fetch company pickup addresses
 export const fetchCompanyAddresses = async () => {
