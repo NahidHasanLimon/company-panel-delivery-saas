@@ -32,7 +32,7 @@
                     title="Clear selection and enter manually"
                   >
                     <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                   </button>
                   <button
@@ -109,7 +109,7 @@
                       title="Clear selection and enter manually"
                     >
                       <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                       </svg>
                     </button>
                     <button
@@ -171,7 +171,7 @@
                       title="Clear selection and enter manually"
                     >
                       <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                       </svg>
                     </button>
                     <button
@@ -250,7 +250,7 @@
                         title="Clear selection and enter manually"
                       >
                         <svg class="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
                       </button>
                       <button
@@ -373,78 +373,23 @@
               <div class="space-y-3">
                 <div>
                   <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Assign Deliveryman</label>
-                  <div class="relative">
-                    <button 
-                      type="button"
-                      @click="toggleDeliverymanDropdown"
-                      class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white cursor-pointer flex items-center justify-between"
-                      :class="{ 'ring-1 ring-blue-500 border-blue-500': showDeliverymanDropdown }"
-                    >
-                      <span class="text-left flex-1" :class="{ 'text-gray-500 dark:text-gray-400': !selectedDeliverymanLabel }">
-                        {{ selectedDeliverymanLabel || 'Select a deliveryman (optional)' }}
-                      </span>
-                      <svg 
-                        class="h-4 w-4 text-gray-400 transition-transform"
-                        :class="{ 'rotate-180': showDeliverymanDropdown }"
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                      >
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                    </button>
-                    
-                    <!-- Dropdown -->
-                    <div 
-                      v-if="showDeliverymanDropdown"
-                      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-hidden"
-                    >
-                      <!-- Search input inside dropdown -->
-                      <div class="p-2 border-b border-gray-200 dark:border-gray-600">
-                        <input 
-                          v-model="deliverymanSearch"
-                          @input="searchDeliverymen"
-                          type="text"
-                          class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                          placeholder="Search by name or mobile..."
-                          ref="deliverymanSearchInput"
-                        >
-                      </div>
-                      
-                      <!-- Options container -->
-                      <div class="max-h-40 overflow-y-auto">
-                        <div v-if="isLoadingDeliverymen" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
-                          Searching...
-                        </div>
-                        <div v-else-if="filteredDeliverymen.length === 0 && deliverymanSearch" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
-                          No deliverymen found
-                        </div>
-                        <div v-else>
-                          <!-- Clear selection option -->
-                          <button
-                            v-if="formData.deliveryManId"
-                            type="button"
-                            @click="clearDeliverymanSelection"
-                            class="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border-b border-gray-200 dark:border-gray-700"
-                          >
-                            Clear selection
-                          </button>
-                          <!-- Deliveryman options -->
-                          <button
-                            v-for="deliveryman in filteredDeliverymen"
-                            :key="deliveryman.id"
-                            type="button"
-                            @click="selectDeliveryman(deliveryman)"
-                            class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
-                            :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': formData.deliveryManId === deliveryman.id }"
-                          >
-                            <div class="font-medium">{{ deliveryman.name }}</div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400">{{ deliveryman.mobile_no }}</div>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <SearchableDropdown
+                    v-model="formData.deliveryManId"
+                    :options="deliverymen"
+                    :loading="isLoadingDeliverymen"
+                    placeholder="Select a deliveryman (optional)"
+                    search-placeholder="Search by name or mobile..."
+                    loading-text="Loading deliverymen..."
+                    no-results-text="No deliverymen found"
+                    clear-text="Clear selection"
+                    option-key="id"
+                    option-label="name"
+                    option-sub-label="mobile_no"
+                    :search-fields="['name', 'mobile_no']"
+                    @search="handleDeliverymanSearch"
+                    @select="onDeliverymanSelect"
+                    @clear="onDeliverymanClear"
+                  />
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Type</label>
@@ -954,6 +899,7 @@
 <script>
 import { useDashboardStore } from '../stores/dashboard'
 import { useToastStore } from '../stores/toast'
+import SearchableDropdown from '../components/SearchableDropdown.vue'
 import { 
   getCompanyAddresses, 
   getCompanyItems, 
@@ -965,6 +911,9 @@ import {
 
 export default {
   name: 'CreateDelivery',
+  components: {
+    SearchableDropdown
+  },
   setup() {
     const store = useDashboardStore()
     const toastStore = useToastStore()
@@ -1004,9 +953,6 @@ export default {
       companyCustomers: [],
       customerAddresses: [],
       deliverymen: [],
-      deliverymanSearch: '',
-      filteredDeliverymen: [],
-      showDeliverymanDropdown: false,
       isLoadingDeliverymen: false,
       
       // Modal editing state
@@ -1073,12 +1019,6 @@ export default {
     },
     hasDropAddressSelected() {
       return this.formData.dropAddressId !== null && this.formData.dropAddressId !== ''
-    },
-    selectedDeliverymanLabel() {
-      if (!this.formData.deliveryManId) return ''
-      
-      const selected = this.deliverymen.find(d => d.id === this.formData.deliveryManId)
-      return selected ? `${selected.name} || ${selected.mobile_no}` : ''
     },
   },
   watch: {
@@ -1430,77 +1370,34 @@ export default {
     },
     
     async loadCompanyDeliverymen() {
+      this.isLoadingDeliverymen = true
       try {
         const response = await getCompanyDeliverymen()
         if (response && response.success) {
           this.deliverymen = response.data || []
-          this.filteredDeliverymen = this.deliverymen
         } else {
           this.deliverymen = []
-          this.filteredDeliverymen = []
         }
       } catch (error) {
         console.error('Error loading deliverymen:', error)
         this.deliverymen = []
-        this.filteredDeliverymen = []
-      }
-    },
-    
-    // Deliveryman methods
-    toggleDeliverymanDropdown() {
-      this.showDeliverymanDropdown = !this.showDeliverymanDropdown
-      if (this.showDeliverymanDropdown) {
-        if (!this.deliverymen.length) {
-          this.loadCompanyDeliverymen()
-        }
-        // Focus search input when dropdown opens
-        this.$nextTick(() => {
-          if (this.$refs.deliverymanSearchInput) {
-            this.$refs.deliverymanSearchInput.focus()
-          }
-        })
-      }
-    },
-    
-    async searchDeliverymen() {
-      if (!this.deliverymen.length) {
-        await this.loadCompanyDeliverymen()
-      }
-      
-      this.isLoadingDeliverymen = true
-      
-      try {
-        const search = this.deliverymanSearch.toLowerCase()
-        if (!search) {
-          this.filteredDeliverymen = this.deliverymen
-        } else {
-          this.filteredDeliverymen = this.deliverymen.filter(deliveryman => 
-            deliveryman.name.toLowerCase().includes(search) ||
-            deliveryman.mobile_no.includes(search)
-          )
-        }
       } finally {
         this.isLoadingDeliverymen = false
       }
     },
     
-    selectDeliveryman(deliveryman) {
-      this.formData.deliveryManId = deliveryman.id
-      this.deliverymanSearch = '' // Clear search after selection
-      this.showDeliverymanDropdown = false
+    // Deliveryman dropdown handlers
+    handleDeliverymanSearch(searchTerm) {
+      // Optional: Could implement server-side search here if needed
+      console.log('Searching deliverymen:', searchTerm)
     },
     
-    clearDeliverymanSelection() {
-      this.formData.deliveryManId = ''
-      this.deliverymanSearch = ''
-      this.showDeliverymanDropdown = false
+    onDeliverymanSelect(deliveryman) {
+      console.log('Selected deliveryman:', deliveryman)
     },
     
-    handleOutsideClick(event) {
-      // Close deliveryman dropdown if clicking outside
-      if (!this.$el.contains(event.target)) {
-        this.showDeliverymanDropdown = false
-      }
+    onDeliverymanClear() {
+      console.log('Cleared deliveryman selection')
     },
     
     // Form submission
@@ -1611,7 +1508,7 @@ export default {
         
         // Success - show success toast and redirect
         this.toastStore.success('Delivery created successfully!')
-        this.$router.push('/deliveries')
+        // this.$router.push('/deliveries')
         
       } catch (error) {
         console.error('Error creating delivery:', error)
@@ -1628,12 +1525,6 @@ export default {
     await this.loadCompanyCustomers()
     // Load deliverymen for the dropdown
     await this.loadCompanyDeliverymen()
-    
-    // Add click outside handler for deliveryman dropdown
-    document.addEventListener('click', this.handleOutsideClick)
-  },
-  beforeUnmount() {
-    document.removeEventListener('click', this.handleOutsideClick)
-  },
+  }
 }
 </script>

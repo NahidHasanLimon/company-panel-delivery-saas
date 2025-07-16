@@ -40,6 +40,12 @@ export const createDelivery = async (deliveryData) => {
     return response.data
   } catch (error) {
     console.error('Error creating delivery:', error)
+    
+    // Extract the API error message if available
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message)
+    }
+    
     throw error
   }
 }

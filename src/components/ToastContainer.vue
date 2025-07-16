@@ -4,14 +4,18 @@
       v-for="toast in toasts"
       :key="toast.id"
       :class="[
-        'max-w-sm px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out',
-        'flex items-center space-x-3 border',
+        'max-w-sm px-6 py-4 rounded-lg shadow-xl transform transition-all duration-300 ease-in-out',
+        'flex items-center space-x-3 border-2 backdrop-blur-sm',
         toastClasses[toast.type],
         toast.show ? 'translate-x-0' : 'translate-x-full'
       ]"
     >
       <!-- Icon -->
-      <div class="flex-shrink-0">
+      <button 
+        @click="removeToast(toast.id)"
+        class="flex-shrink-0 p-1 rounded-full hover:bg-black/10 transition-colors cursor-pointer"
+        title="Close notification"
+      >
         <svg v-if="toast.type === 'success'" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
         </svg>
@@ -24,10 +28,10 @@
         <svg v-else class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
         </svg>
-      </div>
+      </button>
 
       <!-- Message -->
-      <div class="flex-1 text-sm font-medium">
+      <div class="flex-1 text-sm font-semibold leading-relaxed">
         {{ toast.message }}
       </div>
 
@@ -55,10 +59,10 @@ export default {
     const { toasts } = storeToRefs(toastStore)
 
     const toastClasses = {
-      success: 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700',
-      error: 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700',
-      warning: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700',
-      info: 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700'
+      success: 'bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-100 border-green-300 dark:border-green-600 shadow-green-200/50 dark:shadow-green-900/50',
+      error: 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600 shadow-red-200/30 dark:shadow-red-900/30',
+      warning: 'bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 border-yellow-300 dark:border-yellow-600 shadow-yellow-200/50 dark:shadow-yellow-900/50',
+      info: 'bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-100 border-blue-300 dark:border-blue-600 shadow-blue-200/50 dark:shadow-blue-900/50'
     }
 
     const removeToast = (id) => {
