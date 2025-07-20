@@ -89,9 +89,43 @@ export const fetchCompanyDeliverymen = async () => {
   }
 }
 
+// Fetch delivery options (types, modes, statuses)
+export const fetchDeliveryOptions = async () => {
+  try {
+    const response = await apiClient.get('/api/company/deliveries/options')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching delivery options:', error)
+    throw error
+  }
+}
+
+// Fetch deliveries with filtering and pagination
+export const fetchDeliveries = async (params = {}) => {
+  try {
+    const response = await apiClient.get('/api/company/deliveries', { params })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching deliveries:', error)
+    throw error
+  }
+}
+
+// Fetch delivery details by ID
+export const fetchDeliveryDetails = async (deliveryId) => {
+  try {
+    const response = await apiClient.get(`/api/company/deliveries/${deliveryId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching delivery details:', error)
+    throw error
+  }
+}
+
 // Export aliases for compatibility
 export const getCompanyAddresses = fetchCompanyAddresses
 export const getCompanyItems = fetchCompanyItems
 export const getCompanyCustomers = fetchCompanyCustomers
 export const getCustomerAddresses = fetchCustomerAddresses
 export const getCompanyDeliverymen = fetchCompanyDeliverymen
+export const getDeliveryOptions = fetchDeliveryOptions

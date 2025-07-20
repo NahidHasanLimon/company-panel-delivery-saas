@@ -392,27 +392,54 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Type</label>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Type *</label>
                   <select 
                     v-model="formData.deliveryType"
+                    required
                     class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="standard">Standard Delivery</option>
-                    <option value="express">Express Delivery</option>
-                    <option value="overnight">Overnight Delivery</option>
-                    <option value="scheduled">Scheduled Delivery</option>
+                    <option value="">Select delivery type...</option>
+                    <option 
+                      v-for="type in deliveryOptions.delivery_types" 
+                      :key="type.value" 
+                      :value="type.value"
+                    >
+                      {{ type.label }}
+                    </option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Mode *</label>
                   <select 
-                    v-model="formData.priority"
+                    v-model="formData.deliveryMode"
+                    required
                     class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="low">Low Priority</option>
-                    <option value="medium">Medium Priority</option>
-                    <option value="high">High Priority</option>
-                    <option value="urgent">Urgent</option>
+                    <option value="">Select delivery mode...</option>
+                    <option 
+                      v-for="mode in deliveryOptions.delivery_modes" 
+                      :key="mode.value" 
+                      :value="mode.value"
+                    >
+                      {{ mode.label }}
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Status *</label>
+                  <select 
+                    v-model="formData.deliveryStatus"
+                    required
+                    class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">Select delivery status...</option>
+                    <option 
+                      v-for="status in filteredDeliveryStatuses" 
+                      :key="status.value" 
+                      :value="status.value"
+                    >
+                      {{ status.label }}
+                    </option>
                   </select>
                 </div>
                 <div>
@@ -421,16 +448,6 @@
                     v-model="formData.expectedDeliveryTime"
                     type="datetime-local"
                     class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  >
-                </div>
-                <div>
-                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Order Tracking No. *</label>
-                  <input 
-                    v-model="formData.orderTrackingNo"
-                    type="text"
-                    required
-                    class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="Enter order tracking number"
                   >
                 </div>
                 <div>
@@ -906,6 +923,7 @@ import {
   getCompanyCustomers, 
   getCustomerAddresses,
   getCompanyDeliverymen,
+  getDeliveryOptions,
   createDelivery as apiCreateDelivery
 } from '../api/delivery'
 
@@ -955,6 +973,13 @@ export default {
       deliverymen: [],
       isLoadingDeliverymen: false,
       
+      // Delivery options
+      deliveryOptions: {
+        delivery_types: [],
+        delivery_modes: [],
+        delivery_statuses: []
+      },
+      
       // Modal editing state
       currentEditingItemIndex: null,
       isSelectingAddress: false,
@@ -972,11 +997,11 @@ export default {
         dropAddressId: null,
         dropLabel: '',
         dropAddress: '',
-        deliveryType: 'standard',
+        deliveryType: '',
+        deliveryMode: '',
+        deliveryStatus: '',
         expectedDeliveryTime: '',
-        orderTrackingNo: '',
         amount: '',
-        priority: 'medium',
         deliveryManId: '',
         deliveryNotes: '',
         items: [this.createEmptyItem()]
@@ -1020,6 +1045,15 @@ export default {
     hasDropAddressSelected() {
       return this.formData.dropAddressId !== null && this.formData.dropAddressId !== ''
     },
+    filteredDeliveryStatuses() {
+      // Filter out 'assigned' status if no deliveryman is selected
+      return this.deliveryOptions.delivery_statuses.filter(status => {
+        if (status.value === 'assigned' && !this.formData.deliveryManId) {
+          return false
+        }
+        return true
+      })
+    },
   },
   watch: {
     // Clear pickup address ID when address is manually edited
@@ -1034,6 +1068,12 @@ export default {
       // Only clear if we have an addressId AND this change wasn't from selecting an address
       if (newVal !== oldVal && this.formData.dropAddressId && !this.isSelectingAddress) {
         this.formData.dropAddressId = null
+      }
+    },
+    // Clear delivery status if it's "assigned" but no deliveryman is selected
+    'formData.deliveryManId': function(newVal, oldVal) {
+      if (!newVal && this.formData.deliveryStatus === 'assigned') {
+        this.formData.deliveryStatus = ''
       }
     }
   },
@@ -1386,6 +1426,26 @@ export default {
       }
     },
     
+    async loadDeliveryOptions() {
+      try {
+        const response = await getDeliveryOptions()
+        if (response && response.success) {
+          this.deliveryOptions = response.data || {
+            delivery_types: [],
+            delivery_modes: [],
+            delivery_statuses: []
+          }
+        }
+      } catch (error) {
+        console.error('Error loading delivery options:', error)
+        this.deliveryOptions = {
+          delivery_types: [],
+          delivery_modes: [],
+          delivery_statuses: []
+        }
+      }
+    },
+    
     // Deliveryman dropdown handlers
     handleDeliverymanSearch(searchTerm) {
       // Optional: Could implement server-side search here if needed
@@ -1420,11 +1480,20 @@ export default {
         if (!this.formData.items.length || !this.formData.items.some(item => item.name)) {
           throw new Error('At least one item is required')
         }
-        if (!this.formData.orderTrackingNo) {
-          throw new Error('Order tracking number is required')
-        }
         if (!this.formData.amount) {
           throw new Error('Delivery amount is required')
+        }
+        if (!this.formData.deliveryType) {
+          throw new Error('Delivery type is required')
+        }
+        if (!this.formData.deliveryMode) {
+          throw new Error('Delivery mode is required')
+        }
+        if (!this.formData.deliveryStatus) {
+          throw new Error('Delivery status is required')
+        }
+        if (this.formData.deliveryStatus === 'assigned' && !this.formData.deliveryManId) {
+          throw new Error('Cannot set status to "assigned" without selecting a deliveryman')
         }
         
         // Prepare payload
@@ -1493,10 +1562,10 @@ export default {
         
         // Delivery details
         payload.delivery_type = this.formData.deliveryType
+        payload.delivery_mode = this.formData.deliveryMode
+        payload.delivery_status = this.formData.deliveryStatus
         payload.expected_delivery_time = this.formData.expectedDeliveryTime
-        payload.order_tracking_no = this.formData.orderTrackingNo
         payload.amount = this.formData.amount ? parseFloat(this.formData.amount) : null
-        payload.priority = this.formData.priority
         payload.delivery_notes = this.formData.deliveryNotes
         
         // Add deliveryman if selected
@@ -1525,6 +1594,8 @@ export default {
     await this.loadCompanyCustomers()
     // Load deliverymen for the dropdown
     await this.loadCompanyDeliverymen()
+    // Load delivery options
+    await this.loadDeliveryOptions()
   }
 }
 </script>
