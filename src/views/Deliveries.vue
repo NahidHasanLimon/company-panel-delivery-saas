@@ -4,7 +4,7 @@
     <div class="flex justify-between items-center">
       <div>
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Deliveries</h2>
-        <p class="text-gray-600 dark:text-gray-400">Track and manage all deliveries</p>
+        <p class="text-gray-600 dark:text-gray-400">Manage all deliveries</p>
       </div>
       <div class="flex space-x-3">
         <!-- View Toggle -->
