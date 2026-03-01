@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-4 mb-4">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-base font-semibold text-gray-900 dark:text-white">Search & Filter</h3>
+  <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-3 mb-3">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Search & Filter</h3>
       <button 
         @click="toggleFilters"
-        class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium flex items-center space-x-1"
+        class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-xs font-medium flex items-center space-x-1"
       >
         <Filter class="h-4 w-4" />
         <span>{{ showAdvanced ? 'Hide' : 'More' }}</span>
@@ -12,7 +12,7 @@
     </div>
     
     <!-- Basic Search -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-2">
       <div>
         <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
         <div class="relative">
@@ -21,7 +21,7 @@
             v-model="filters.search"
             type="text" 
             placeholder="Search..."
-            class="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            class="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             @input="$emit('filter-change', filters)"
           >
         </div>
@@ -31,7 +31,7 @@
         <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
         <select 
           v-model="filters.status"
-          class="w-full px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
           @change="$emit('filter-change', filters)"
         >
           <option value="">All Status</option>
@@ -45,7 +45,7 @@
         <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Deliveryman</label>
         <select 
           v-model="filters.deliveryman"
-          class="w-full px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
           @change="$emit('filter-change', filters)"
         >
           <option value="">All</option>
@@ -54,12 +54,23 @@
           </option>
         </select>
       </div>
+
+      <div v-if="showIdentificationNumber">
+        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Identification No.</label>
+        <input
+          v-model="filters.identificationNumber"
+          type="text"
+          placeholder="ID number..."
+          class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          @input="$emit('filter-change', filters)"
+        >
+      </div>
       
       <div>
         <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Per page</label>
         <select 
           v-model="filters.perPage"
-          class="w-full px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
           @change="$emit('filter-change', filters)"
         >
           <option value="10">10</option>
@@ -70,13 +81,13 @@
     </div>
     
     <!-- Advanced Filters -->
-    <div v-if="showAdvanced" class="border-t border-gray-200 dark:border-gray-600 pt-3">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div v-if="showAdvanced" class="border-t border-gray-200 dark:border-gray-600 pt-2">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
         <div v-if="showPriority">
           <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
           <select 
             v-model="filters.priority"
-            class="w-full px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             @change="$emit('filter-change', filters)"
           >
             <option value="">All</option>
@@ -86,37 +97,31 @@
           </select>
         </div>
         
-        <div>
-          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">From Date</label>
-          <input 
-            v-model="filters.fromDate"
-            type="date" 
-            class="w-full px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            @change="$emit('filter-change', filters)"
-          >
-        </div>
-        
-        <div>
-          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">To Date</label>
-          <input 
-            v-model="filters.toDate"
-            type="date" 
-            class="w-full px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            @change="$emit('filter-change', filters)"
-          >
-        </div>
+        <DatePickerField
+          v-model="filters.fromDate"
+          label="From Date"
+          input-class="standard-date w-full px-2 py-1.5 pr-8 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          @change="$emit('filter-change', filters)"
+        />
+
+        <DatePickerField
+          v-model="filters.toDate"
+          label="To Date"
+          input-class="standard-date w-full px-2 py-1.5 pr-8 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          @change="$emit('filter-change', filters)"
+        />
       </div>
       
-      <div class="flex justify-end space-x-2 mt-3">
+      <div class="flex justify-end space-x-2 mt-2">
         <button 
           @click="clearFilters"
-          class="px-3 py-1 text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          class="px-3 py-1 text-xs text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           Clear
         </button>
         <button 
           @click="$emit('filter-change', filters)"
-          class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           Apply
         </button>
@@ -127,12 +132,14 @@
 
 <script>
 import { Search, Filter } from 'lucide-vue-next'
+import DatePickerField from './DatePickerField.vue'
 
 export default {
   name: 'FilterForm',
   components: {
     Search,
-    Filter
+    Filter,
+    DatePickerField
   },
   props: {
     showStatus: {
@@ -144,6 +151,10 @@ export default {
       default: false
     },
     showPriority: {
+      type: Boolean,
+      default: false
+    },
+    showIdentificationNumber: {
       type: Boolean,
       default: false
     },
@@ -164,6 +175,7 @@ export default {
         search: '',
         status: '',
         deliveryman: '',
+        identificationNumber: '',
         priority: '',
         fromDate: '',
         toDate: '',
@@ -180,6 +192,7 @@ export default {
         search: '',
         status: '',
         deliveryman: '',
+        identificationNumber: '',
         priority: '',
         fromDate: '',
         toDate: '',

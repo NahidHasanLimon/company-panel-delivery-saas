@@ -18,6 +18,252 @@ html, body {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+:root {
+  --panel-bg: #f1f5f9;
+  --panel-border: #e2e8f0;
+  --panel-strong: #0f172a;
+  --panel-muted: #64748b;
+}
+
+.dark {
+  --panel-bg: #0b1220;
+  --panel-border: #1e293b;
+  --panel-strong: #e2e8f0;
+  --panel-muted: #94a3b8;
+}
+
+.app-shell {
+  background: var(--panel-bg);
+}
+
+.app-sidebar {
+  background: #ffffff;
+  border-color: var(--panel-border) !important;
+  box-shadow: 0 18px 45px -34px rgb(15 23 42 / 0.45);
+}
+
+.app-header {
+  background: #ffffff;
+  border-color: var(--panel-border) !important;
+  box-shadow: none;
+}
+
+.control-btn {
+  border: 1px solid var(--panel-border);
+  background: #ffffff;
+}
+
+.control-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+/* Keep date inputs browser-standard and consistent across pages */
+.standard-date {
+  appearance: auto;
+  -webkit-appearance: auto;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.standard-date::-webkit-calendar-picker-indicator {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+/* Dense company panel mode for data-heavy pages */
+.compact-panel {
+  font-size: 12px;
+}
+
+.compact-panel .text-2xl {
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+
+.compact-panel .text-xl {
+  font-size: 1.125rem;
+  line-height: 1.35;
+}
+
+.compact-panel .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+
+.compact-panel table th,
+.compact-panel table td {
+  padding-top: 0.36rem;
+  padding-bottom: 0.36rem;
+  padding-left: 0.58rem;
+  padding-right: 0.58rem;
+}
+
+.compact-panel input,
+.compact-panel select,
+.compact-panel textarea {
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.compact-panel button {
+  line-height: 1.2;
+}
+
+.compact-panel .card-shadow {
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 10px 24px rgb(15 23 42 / 0.03);
+}
+
+.compact-panel .card-shadow:hover {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.07), 0 14px 30px rgb(15 23 42 / 0.06);
+}
+
+.compact-panel .dark\:bg-gray-900,
+.compact-panel .dark\:bg-gray-800,
+.compact-panel .dark\:bg-gray-700 {
+  background-color: #ffffff !important;
+}
+
+.compact-panel .dark\:text-white {
+  color: #0f172a !important;
+}
+
+.compact-panel .dark\:text-gray-400,
+.compact-panel .dark\:text-gray-300 {
+  color: #64748b !important;
+}
+
+.compact-panel .dark\:border-gray-700,
+.compact-panel .dark\:border-gray-600 {
+  border-color: #e2e8f0 !important;
+}
+
+.compact-panel .dark\:hover\:bg-gray-700:hover,
+.compact-panel .dark\:hover\:bg-gray-800:hover {
+  background-color: #f8fafc !important;
+}
+
+.compact-panel table,
+.compact-panel thead,
+.compact-panel tbody,
+.compact-panel tr,
+.compact-panel th,
+.compact-panel td {
+  border-color: #e2e8f0 !important;
+}
+
+/* Standardized sophisticated table styling for data-heavy pages */
+.compact-panel .overflow-x-auto > table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.compact-panel .overflow-x-auto > table thead th {
+  font-size: 0.6rem !important;
+  line-height: 0.9rem !important;
+  letter-spacing: 0.055em;
+  font-weight: 600;
+  color: #475569 !important;
+  background: #fbfcfe !important;
+  border-bottom: 1px solid #e9edf4 !important;
+  text-transform: uppercase;
+}
+
+.compact-panel .overflow-x-auto > table tbody td {
+  font-size: 0.69rem !important;
+  line-height: 1.02rem !important;
+  color: #0f172a !important;
+  font-weight: 500;
+  background: #ffffff !important;
+  border-bottom: 1px solid #f0f3f8 !important;
+}
+
+.compact-panel .overflow-x-auto > table tbody tr:hover td {
+  background: #f8fbff !important;
+}
+
+/* Monochrome dashboard theme */
+.compact-panel .bg-blue-600,
+.compact-panel .bg-blue-700,
+.compact-panel .bg-indigo-600,
+.compact-panel .bg-indigo-700,
+.compact-panel .bg-purple-600,
+.compact-panel .bg-purple-700,
+.compact-panel .bg-emerald-600,
+.compact-panel .bg-green-600,
+.compact-panel .bg-red-600,
+.compact-panel .bg-yellow-600 {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+}
+
+.compact-panel .hover\:bg-blue-700:hover,
+.compact-panel .hover\:bg-blue-800:hover,
+.compact-panel .hover\:bg-indigo-700:hover,
+.compact-panel .hover\:bg-purple-700:hover,
+.compact-panel .hover\:bg-emerald-700:hover,
+.compact-panel .hover\:bg-green-700:hover {
+  background-color: #020617 !important;
+}
+
+.compact-panel .text-blue-600,
+.compact-panel .text-blue-700,
+.compact-panel .text-blue-800,
+.compact-panel .text-indigo-600,
+.compact-panel .text-purple-600,
+.compact-panel .text-emerald-600,
+.compact-panel .text-green-600 {
+  color: #0f172a !important;
+}
+
+.compact-panel .dark\:text-blue-400,
+.compact-panel .dark\:text-blue-300,
+.compact-panel .dark\:text-indigo-400,
+.compact-panel .dark\:text-purple-400,
+.compact-panel .dark\:text-emerald-400,
+.compact-panel .dark\:text-green-400 {
+  color: #e2e8f0 !important;
+}
+
+.compact-panel .bg-blue-50,
+.compact-panel .bg-blue-100,
+.compact-panel .bg-blue-900\/20,
+.compact-panel .bg-blue-900\/50,
+.compact-panel .bg-indigo-100,
+.compact-panel .bg-purple-100,
+.compact-panel .bg-emerald-100,
+.compact-panel .bg-green-100,
+.compact-panel .bg-red-100,
+.compact-panel .bg-yellow-100 {
+  background-color: #f1f5f9 !important;
+}
+
+.compact-panel .dark\:bg-blue-900,
+.compact-panel .dark\:bg-blue-900\/20,
+.compact-panel .dark\:bg-blue-900\/50,
+.compact-panel .dark\:bg-indigo-900,
+.compact-panel .dark\:bg-purple-900,
+.compact-panel .dark\:bg-emerald-900,
+.compact-panel .dark\:bg-green-900,
+.compact-panel .dark\:bg-red-900,
+.compact-panel .dark\:bg-yellow-900 {
+  background-color: #1e293b !important;
+}
+
+.compact-panel .border-blue-600,
+.compact-panel .border-blue-700,
+.compact-panel .border-indigo-600,
+.compact-panel .border-purple-600,
+.compact-panel .border-emerald-600,
+.compact-panel .border-green-600 {
+  border-color: #334155 !important;
 }
 
 .card-shadow {
@@ -55,18 +301,19 @@ body {
 
 /* Custom scrollbar for dark mode */
 .dark ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #374151;
+  background: #0f172a;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #6b7280;
+  background: #334155;
   border-radius: 4px;
+  border: 2px solid #0f172a;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #475569;
 }

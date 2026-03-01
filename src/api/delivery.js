@@ -1,4 +1,7 @@
 import apiClient from './client'
+import axios from 'axios'
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 // Fetch company pickup addresses
 export const fetchCompanyAddresses = async () => {
@@ -78,13 +81,79 @@ export const fetchCompanyCustomers = async (page = 1, search = '') => {
   }
 }
 
-// Fetch company deliverymen
-export const fetchCompanyDeliverymen = async () => {
+// Fetch company deliverymen with filtering + pagination
+export const fetchCompanyDeliverymen = async (params = {}) => {
   try {
-    const response = await apiClient.get('/api/company/deliverymen')
+    const response = await apiClient.get('/api/company/deliverymen', { params })
     return response.data
   } catch (error) {
     console.error('Error fetching company deliverymen:', error)
+    throw error
+  }
+}
+
+// Unlink delivery man from company
+export const unlinkCompanyDeliveryman = async (deliverymanId) => {
+  try {
+    const response = await apiClient.delete(`/api/company/deliverymen/${deliverymanId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error unlinking delivery man:', error)
+    throw error
+  }
+}
+
+// Invite delivery man with OTP
+export const inviteDeliveryMan = async (mobileNumber) => {
+  try {
+    const response = await apiClient.post('/api/company/delivery-men/invitations', {
+      mobile_number: mobileNumber
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error inviting delivery man:', error)
+    throw error
+  }
+}
+
+// Fetch delivery man invitations with filtering + pagination
+export const fetchDeliveryManInvitations = async (params = {}) => {
+  try {
+    const response = await apiClient.get('/api/company/delivery-men/invitations', { params })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching delivery man invitations:', error)
+    throw error
+  }
+}
+
+// Resend OTP for existing invitation
+export const resendDeliveryManInvitation = async (inviteId) => {
+  try {
+    const response = await apiClient.post(`/api/company/delivery-men/invitations/${inviteId}/resend`)
+    return response.data
+  } catch (error) {
+    console.error('Error resending delivery man invitation OTP:', error)
+    throw error
+  }
+}
+
+// Verify delivery man invitation OTP (public endpoint)
+export const verifyDeliveryManInvite = async (inviteId, otp) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/delivery-men/invitations/${inviteId}/verify`,
+      { otp },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error('Error verifying delivery man invitation:', error)
     throw error
   }
 }

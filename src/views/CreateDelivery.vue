@@ -220,7 +220,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
               <div class="flex items-center mb-3">
                 <h2 class="text-sm font-semibold text-gray-900 dark:text-white flex items-center">
-                  <svg class="h-4 w-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-4 w-4 mr-2 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                   </svg>
                   Items to Deliver
@@ -231,7 +231,7 @@
                 <div 
                   v-for="(item, index) in formData.items" 
                   :key="`item-${index}`"
-                  class="p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50"
+                  class="p-3 border border-slate-200 dark:border-slate-300 rounded-lg bg-white"
                 >
                   <!-- Item header -->
                   <div class="flex items-center justify-between mb-2">
@@ -256,7 +256,7 @@
                       <button
                         type="button"
                         @click="openItemsModalForIndex(index)"
-                        class="inline-flex items-center px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-medium rounded hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors border border-blue-200 dark:border-blue-800"
+                        class="inline-flex items-center px-1.5 py-0.5 bg-slate-50 text-slate-700 text-xs font-medium rounded hover:bg-slate-100 transition-colors border border-slate-200"
                         title="Choose from catalog"
                       >
                         <svg class="h-2.5 w-2.5 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,7 +347,7 @@
                   type="button"
                   @click="addNewItem"
                   :disabled="!canAddNewItem"
-                  class="inline-flex items-center px-2 py-1 border border-dashed border-gray-300 dark:border-gray-600 rounded text-gray-600 dark:text-gray-400 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="inline-flex items-center px-2 py-1 border border-dashed border-slate-300 rounded text-slate-600 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                   :title="canAddNewItem ? 'Add Another Item' : 'Complete the current item first'"
                 >
                   <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -787,12 +787,12 @@
     </div>
 
     <!-- Items Modal -->
-    <div v-if="showItemsModal" class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70 backdrop-blur-sm flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-xl w-full max-w-6xl mx-4 max-h-[85vh] shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col">
+    <div v-if="showItemsModal" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl w-full max-w-6xl mx-4 max-h-[85vh] shadow-2xl border border-slate-200 flex flex-col">
         <!-- Modal Header -->
         <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-            <svg class="h-5 w-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <svg class="h-5 w-5 mr-2 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
             </svg>
             Select Item from Catalog
@@ -800,7 +800,7 @@
           <button 
             type="button"
             @click="closeItemsModal"
-            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+            class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -821,21 +821,21 @@
               <input 
                 v-model="itemSearch"
                 type="text" 
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 bg-white text-slate-900"
                 placeholder="Search items by name, code, or description..."
                 @keyup.enter="searchItems"
               >
             </div>
             <button
               @click="searchItems"
-              class="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="px-4 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
             >
               Search
             </button>
             <button
               v-if="itemSearch"
               @click="clearItemSearch"
-              class="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              class="px-4 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
             >
               Clear
             </button>
@@ -843,7 +843,7 @@
 
           <!-- Item List -->
           <div class="flex-1 overflow-y-auto">
-            <div v-if="companyItems.length === 0" class="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div v-if="companyItems.length === 0" class="text-center py-12 text-gray-500">
               <svg class="h-16 w-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
@@ -857,22 +857,22 @@
                 :key="item.id"
                 type="button"
                 @click="selectItemFromModal(item)"
-                class="text-left p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 group"
+                class="text-left p-3 border border-slate-200 rounded-lg hover:border-slate-300 hover:bg-slate-50 transition-all duration-200 group"
               >
                 <div class="flex items-center justify-between mb-1">
-                  <div class="font-medium text-sm text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 flex items-center truncate">
-                    <svg class="h-4 w-4 mr-1 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="font-medium text-sm text-gray-900 group-hover:text-slate-900 flex items-center truncate">
+                    <svg class="h-4 w-4 mr-1 text-slate-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
                     <span class="truncate">{{ item.name }}</span>
                   </div>
-                  <svg class="h-3 w-3 text-gray-400 group-hover:text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-3 w-3 text-gray-400 group-hover:text-slate-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </div>
-                <div class="text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
+                <div class="text-xs text-gray-600 space-y-0.5">
                   <div v-if="item.code || item.unit" class="flex items-center space-x-2">
-                    <span v-if="item.code" class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">{{ item.code }}</span>
+                    <span v-if="item.code" class="font-mono text-xs bg-slate-100 px-1 py-0.5 rounded">{{ item.code }}</span>
                     <span v-if="item.unit" class="text-xs">{{ item.unit }}</span>
                   </div>
                   <div v-if="item.description" class="text-xs truncate">{{ item.description }}</div>
@@ -1414,7 +1414,16 @@ export default {
       try {
         const response = await getCompanyDeliverymen()
         if (response && response.success) {
-          this.deliverymen = response.data || []
+          const data = response.data || {}
+          if (Array.isArray(data.delivery_men)) {
+            this.deliverymen = data.delivery_men
+          } else if (Array.isArray(data.data)) {
+            this.deliverymen = data.data
+          } else if (Array.isArray(data)) {
+            this.deliverymen = data
+          } else {
+            this.deliverymen = []
+          }
         } else {
           this.deliverymen = []
         }

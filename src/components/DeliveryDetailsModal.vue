@@ -1,15 +1,22 @@
 <template>
-  <div v-if="delivery" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div v-if="delivery" class="fixed inset-0 bg-slate-900/15 backdrop-blur-[1px] flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-7xl max-h-[95vh] overflow-y-auto">
       <div v-if="loading" class="flex items-center justify-center h-full">
         <span class="text-gray-500 dark:text-gray-400">Loading...</span>
       </div>
       <div v-else>
         <!-- Header Section -->
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
             Delivery Details - {{ delivery.tracking_number }}
           </h2>
+          <button 
+            @click="$emit('close')" 
+            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            aria-label="Close modal"
+          >
+            <X class="h-5 w-5" />
+          </button>
         </div>
 
         <!-- Main Content Grid -->
@@ -134,6 +141,10 @@
                   <span class="font-medium text-gray-900 dark:text-white">{{ delivery.delivery_type }}</span>
                 </div>
                 <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
+                  <span class="text-gray-500 dark:text-gray-400">Delivery Mode:</span>
+                  <span class="font-medium text-gray-900 dark:text-white">{{ delivery.delivery_mode }}</span>
+                </div>
+                <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
                   <span class="text-gray-500 dark:text-gray-400">Assigned At:</span>
                   <span class="font-medium text-gray-900 dark:text-white">{{ formatDateTime(delivery.assigned_at) }}</span>
                 </div>
@@ -144,6 +155,29 @@
                 <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
                   <span class="text-gray-500 dark:text-gray-400">Delivered At:</span>
                   <span class="font-medium text-gray-900 dark:text-white">{{ formatDateTime(delivery.delivered_at) }}</span>
+                </div>
+                <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
+                  <span class="text-gray-500 dark:text-gray-400">Delivery Notes:</span>
+                  <span class="font-medium text-gray-900 dark:text-white">{{ delivery.delivery_notes || 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
+                  <span class="text-gray-500 dark:text-gray-400">Proof Notes:</span>
+                  <span class="font-medium text-gray-900 dark:text-white">{{ delivery.proof_notes || 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
+                  <span class="text-gray-500 dark:text-gray-400">Proof Image:</span>
+                  <span>
+                    <button v-if="delivery.proof_image_url" @click="viewImage(delivery.proof_image_url)" class="text-blue-500 hover:underline">View</button>
+                    <span v-else class="text-gray-500 dark:text-gray-400">N/A</span>
+                  </span>
+                </div>
+                <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
+                  <span class="text-gray-500 dark:text-gray-400">Created At:</span>
+                  <span class="font-medium text-gray-900 dark:text-white">{{ formatDateTime(delivery.created_at) }}</span>
+                </div>
+                <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
+                  <span class="text-gray-500 dark:text-gray-400">Last Updated At:</span>
+                  <span class="font-medium text-gray-900 dark:text-white">{{ formatDateTime(delivery.updated_at) }}</span>
                 </div>
               </div>
             </div>
@@ -259,6 +293,11 @@ export default {
         hour: '2-digit',
         minute: '2-digit'
       })
+    },
+
+    viewImage(url) {
+      // Logic to view image in a new tab or modal
+      window.open(url, '_blank');
     }
   }
 }

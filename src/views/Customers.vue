@@ -1,298 +1,307 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header Actions -->
-    <div class="flex justify-between items-center">
-      <div>
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Customers</h2>
-        <p class="text-gray-600 dark:text-gray-400">Manage your customer database</p>
-      </div>
-      <button 
-        @click="showAddModal = true"
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-      >
-        <Plus class="h-4 w-4" />
-        <span>Add Customer</span>
-      </button>
+  <div class="space-y-4">
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Customers</h2>
+      <p class="text-xs text-gray-500 dark:text-gray-400">Manage your customer database</p>
     </div>
 
-    <!-- Filter Component -->
-    <FilterForm 
-      :show-status="true"
-      :show-deliveryman="false"
-      :show-priority="false"
-      :status-options="statusOptions"
-      @filter-change="handleFilterChange"
-    />
-
-    <!-- Customers Table -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl card-shadow overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead class="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Customer</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contact</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Address</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Orders</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Joined</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            <tr v-for="customer in paginatedCustomers" :key="customer.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                    <User class="h-4 w-4 text-white" />
-                  </div>
-                  <div class="ml-3">
-                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ customer.name }}</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ customer.email }}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm text-gray-900 dark:text-white">{{ customer.phone }}</div>
-              </td>
-              <td class="px-4 py-3 max-w-xs">
-                <div class="text-sm text-gray-900 dark:text-white truncate">{{ customer.address }}</div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="flex items-center">
-                  <Package class="h-4 w-4 text-blue-600 mr-1" />
-                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ customer.totalOrders }}</span>
-                </div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {{ formatDate(customer.joinedDate) }}
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <span 
-                  class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  :class="customer.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'"
-                >
-                  {{ customer.status }}
-                </span>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
-                <div class="flex space-x-1">
-                  <button 
-                    @click="editCustomer(customer)"
-                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-xs px-2 py-1 border border-blue-600 dark:border-blue-400 rounded"
-                  >
-                    Edit
-                  </button>
-                  <button class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 text-xs px-2 py-1 border border-green-600 dark:border-green-400 rounded">
-                    View
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <form class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-3" @submit.prevent="applyFilters">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-2">
+        <div>
+          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+          <input
+            v-model="filters.name"
+            type="text"
+            placeholder="Search by name"
+            class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile</label>
+          <input
+            v-model="filters.mobile"
+            type="text"
+            placeholder="Search by mobile"
+            class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+          <input
+            v-model="filters.email"
+            type="text"
+            placeholder="Search by email"
+            class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Customer Code</label>
+          <input
+            v-model="filters.customerCode"
+            type="text"
+            placeholder="Search by code"
+            class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Per Page</label>
+          <select
+            v-model="filters.perPage"
+            class="w-full px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
       </div>
-      
-      <!-- Pagination -->
-      <Pagination 
-        v-if="totalPages > 1"
-        :current-page="currentPage"
-        :total-pages="totalPages"
-        :total-items="filteredCustomers.length"
-        :per-page="parseInt(filters.perPage)"
+
+      <div class="mt-2 flex items-center justify-end gap-2">
+        <button
+          type="button"
+          class="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+          @click="resetFilters"
+        >
+          Clear
+        </button>
+        <button
+          type="submit"
+          class="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black disabled:opacity-60"
+          :disabled="loading"
+        >
+          {{ loading ? 'Applying...' : 'Apply Filter' }}
+        </button>
+      </div>
+    </form>
+
+    <div v-if="loading" class="flex items-center justify-center py-10 bg-white dark:bg-gray-800 rounded-xl card-shadow">
+      <div class="h-6 w-6 border-2 border-gray-300 border-t-gray-700 rounded-full animate-spin"></div>
+      <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Loading customers...</span>
+    </div>
+
+    <template v-else>
+      <div v-if="customers.length" class="bg-white dark:bg-gray-800 rounded-xl card-shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mobile</th>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Address</th>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Customer Code</th>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tr v-for="customer in customers" :key="customer.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-2.5 text-sm font-medium text-gray-900 dark:text-white">{{ customer.name || '-' }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200">{{ customer.email || '-' }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200">{{ customer.mobile_no || '-' }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 max-w-[220px] truncate">{{ customer.address || '-' }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200">{{ customer.customer_code || '-' }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300">{{ formatDate(customer.created_at) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div v-if="showEmptyState" class="text-center py-10 bg-white dark:bg-gray-800 rounded-xl card-shadow">
+        <p class="text-sm text-gray-600 dark:text-gray-400">No customers yet.</p>
+      </div>
+
+      <div v-else-if="showNoMatches" class="text-center py-10 bg-white dark:bg-gray-800 rounded-xl card-shadow">
+        <p class="text-sm text-gray-600 dark:text-gray-400">No customers found for current filters.</p>
+      </div>
+
+      <Pagination
+        v-if="pagination.total > 0 && pagination.last_page > 1"
+        :current-page="pagination.current_page"
+        :total-pages="pagination.last_page"
+        :total-items="pagination.total"
+        :per-page="pagination.per_page"
         @page-change="handlePageChange"
       />
-    </div>
-
-    <!-- Add/Edit Customer Modal -->
-    <div v-if="showAddModal || showEditModal" class="fixed inset-0 bg-gray-900/20 dark:bg-gray-900/40 backdrop-blur-sm flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-700">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          {{ showEditModal ? 'Edit Customer' : 'Add New Customer' }}
-        </h3>
-        <form @submit.prevent="showEditModal ? updateCustomer() : addCustomer()" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-            <input 
-              v-model="formData.name"
-              type="text" 
-              required
-              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter full name"
-            >
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-            <input 
-              v-model="formData.email"
-              type="email" 
-              required
-              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter email address"
-            >
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
-            <input 
-              v-model="formData.phone"
-              type="tel" 
-              required
-              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter phone number"
-            >
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-            <textarea 
-              v-model="formData.address"
-              required
-              rows="3"
-              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter full address"
-            ></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-            <select 
-              v-model="formData.status"
-              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-          <div class="flex space-x-3 pt-4">
-            <button 
-              type="button"
-              @click="closeModal"
-              class="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit"
-              class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              {{ showEditModal ? 'Update' : 'Add' }} Customer
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
-import { useDashboardStore } from '../stores/dashboard'
-import { User, Package, Plus } from 'lucide-vue-next'
-import FilterForm from '../components/FilterForm.vue'
 import Pagination from '../components/Pagination.vue'
+import { useToastStore } from '../stores/toast'
+import { listCompanyCustomers } from '../api/customers'
 
 export default {
   name: 'Customers',
   components: {
-    User,
-    Package,
-    Plus,
-    FilterForm,
     Pagination
   },
   setup() {
-    const store = useDashboardStore()
-    return { store }
+    const toastStore = useToastStore()
+    return { toastStore }
   },
   data() {
     return {
-      showAddModal: false,
-      showEditModal: false,
-      editingCustomer: null,
-      currentPage: 1,
+      loading: false,
+      syncingRoute: false,
+      customers: [],
       filters: {
-        search: '',
-        status: '',
-        perPage: '15'
-      },
-      formData: {
         name: '',
         email: '',
-        phone: '',
-        address: '',
-        status: 'active'
+        mobile: '',
+        customerCode: '',
+        perPage: '15'
       },
-      statusOptions: [
-        { value: 'active', label: 'Active' },
-        { value: 'inactive', label: 'Inactive' }
-      ]
+      currentPage: 1,
+      pagination: {
+        current_page: 1,
+        per_page: 15,
+        total: 0,
+        last_page: 1
+      }
     }
   },
   computed: {
-    filteredCustomers() {
-      let filtered = [...this.store.customers]
-      
-      if (this.filters.search) {
-        const search = this.filters.search.toLowerCase()
-        filtered = filtered.filter(customer => 
-          customer.name.toLowerCase().includes(search) ||
-          customer.email.toLowerCase().includes(search) ||
-          customer.phone.includes(search) ||
-          customer.address.toLowerCase().includes(search)
-        )
-      }
-      
-      if (this.filters.status) {
-        filtered = filtered.filter(customer => customer.status === this.filters.status)
-      }
-      
-      return filtered
+    showEmptyState() {
+      return !this.loading && this.customers.length === 0 && this.pagination.total === 0 && !this.hasFilters
     },
-    totalPages() {
-      return Math.ceil(this.filteredCustomers.length / parseInt(this.filters.perPage))
+    showNoMatches() {
+      return !this.loading && this.customers.length === 0 && this.hasFilters
     },
-    paginatedCustomers() {
-      const start = (this.currentPage - 1) * parseInt(this.filters.perPage)
-      const end = start + parseInt(this.filters.perPage)
-      return this.filteredCustomers.slice(start, end)
+    hasFilters() {
+      return Boolean(this.filters.name || this.filters.email || this.filters.mobile || this.filters.customerCode)
     }
   },
+  watch: {
+    '$route.query': {
+      async handler(newQuery) {
+        if (this.syncingRoute) return
+        this.applyQueryToState(newQuery)
+        await this.fetchCustomers()
+      }
+    }
+  },
+  async mounted() {
+    this.applyQueryToState(this.$route.query)
+    await this.fetchCustomers()
+  },
   methods: {
-    handleFilterChange(newFilters) {
-      this.filters = { ...newFilters }
-      this.currentPage = 1
+    formatDate(value) {
+      if (!value) return '-'
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) return value
+      return date.toLocaleDateString()
     },
-    handlePageChange(page) {
-      this.currentPage = page
+    applyQueryToState(query) {
+      this.filters.name = typeof query.name === 'string' ? query.name : ''
+      this.filters.email = typeof query.email === 'string' ? query.email : ''
+      this.filters.mobile = typeof query.mobile === 'string' ? query.mobile : ''
+      this.filters.customerCode = typeof query.customer_code === 'string' ? query.customer_code : ''
+      const perPage = Number(query.per_page)
+      this.filters.perPage = Number.isInteger(perPage) && perPage > 0 ? String(perPage) : '15'
+
+      const page = Number(query.page)
+      this.currentPage = Number.isInteger(page) && page > 0 ? page : 1
     },
-    addCustomer() {
-      this.store.addCustomer({ ...this.formData })
-      this.closeModal()
+    buildQueryFromState() {
+      const query = {}
+      if (this.filters.name?.trim()) query.name = this.filters.name.trim()
+      if (this.filters.email?.trim()) query.email = this.filters.email.trim()
+      if (this.filters.mobile?.trim()) query.mobile = this.filters.mobile.trim()
+      if (this.filters.customerCode?.trim()) query.customer_code = this.filters.customerCode.trim()
+      if (this.filters.perPage !== '15') query.per_page = this.filters.perPage
+      if (this.currentPage > 1) query.page = String(this.currentPage)
+      return query
     },
-    editCustomer(customer) {
-      this.editingCustomer = customer
-      this.formData = { ...customer }
-      this.showEditModal = true
+    async syncRouteQuery() {
+      const nextQuery = this.buildQueryFromState()
+      const currentQuery = {
+        ...(this.$route.query.name ? { name: this.$route.query.name } : {}),
+        ...(this.$route.query.email ? { email: this.$route.query.email } : {}),
+        ...(this.$route.query.mobile ? { mobile: this.$route.query.mobile } : {}),
+        ...(this.$route.query.customer_code ? { customer_code: this.$route.query.customer_code } : {}),
+        ...(this.$route.query.per_page ? { per_page: this.$route.query.per_page } : {}),
+        ...(this.$route.query.page ? { page: this.$route.query.page } : {})
+      }
+
+      if (JSON.stringify(nextQuery) === JSON.stringify(currentQuery)) {
+        return
+      }
+
+      this.syncingRoute = true
+      await this.$router.replace({ query: nextQuery })
+      this.syncingRoute = false
     },
-    updateCustomer() {
-      this.store.updateCustomer(this.editingCustomer.id, { ...this.formData })
-      this.closeModal()
+    buildParams() {
+      const params = { page: this.currentPage }
+      if (this.filters.name?.trim()) params.name = this.filters.name.trim()
+      if (this.filters.email?.trim()) params.email = this.filters.email.trim()
+      if (this.filters.mobile?.trim()) params.mobile_no = this.filters.mobile.trim()
+      if (this.filters.customerCode?.trim()) params.customer_code = this.filters.customerCode.trim()
+      params.per_page = Number(this.filters.perPage) || 15
+      return params
     },
-    closeModal() {
-      this.showAddModal = false
-      this.showEditModal = false
-      this.editingCustomer = null
-      this.formData = {
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        status: 'active'
+    async fetchCustomers() {
+      try {
+        this.loading = true
+
+        const response = await listCompanyCustomers(this.buildParams())
+        if (response?.success === false) {
+          this.customers = []
+          this.pagination = {
+            current_page: 1,
+            per_page: 15,
+            total: 0,
+            last_page: 1
+          }
+          this.toastStore.error(response?.message || 'Failed to load customers')
+          return
+        }
+
+        const data = response?.data || {}
+        this.customers = Array.isArray(data.data) ? data.data : []
+        this.pagination = {
+          current_page: data.current_page || this.currentPage,
+          per_page: data.per_page || 15,
+          total: data.total || 0,
+          last_page: data.last_page || 1
+        }
+
+        if (this.currentPage > this.pagination.last_page && this.pagination.last_page > 0) {
+          this.currentPage = this.pagination.last_page
+          await this.syncRouteQuery()
+          await this.fetchCustomers()
+        }
+      } catch (error) {
+        const message = error?.response?.data?.message || 'Failed to load customers'
+        this.toastStore.error(message)
+        this.customers = []
+      } finally {
+        this.loading = false
       }
     },
-    formatDate(dateString) {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
+    async applyFilters() {
+      this.currentPage = 1
+      await this.syncRouteQuery()
+      await this.fetchCustomers()
+    },
+    async resetFilters() {
+      this.filters.name = ''
+      this.filters.email = ''
+      this.filters.mobile = ''
+      this.filters.customerCode = ''
+      this.filters.perPage = '15'
+      this.currentPage = 1
+      await this.syncRouteQuery()
+      await this.fetchCustomers()
+    },
+    async handlePageChange(page) {
+      if (page < 1 || page > this.pagination.last_page) return
+      this.currentPage = page
+      await this.syncRouteQuery()
+      await this.fetchCustomers()
     }
   }
 }

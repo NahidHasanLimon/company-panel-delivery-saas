@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardLayout from '../layouts/DashboardLayout.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Deliverymen from '../views/Deliverymen.vue'
+import DeliveryInvitations from '../views/DeliveryInvitations.vue'
+import Items from '../views/Items.vue'
 import Customers from '../views/Customers.vue'
 import Deliveries from '../views/Deliveries.vue'
 import CreateDelivery from '../views/CreateDelivery.vue'
@@ -28,6 +30,16 @@ const routes = [
         path: '/deliverymen',
         name: 'Deliverymen',
         component: Deliverymen
+      },
+      {
+        path: '/delivery-invitations',
+        name: 'DeliveryInvitations',
+        component: DeliveryInvitations
+      },
+      {
+        path: '/items',
+        name: 'Items',
+        component: Items
       },
       {
         path: '/customers',
