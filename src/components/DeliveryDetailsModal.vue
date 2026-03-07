@@ -134,7 +134,7 @@
               <div class="p-4 space-y-2">
                 <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
                   <span class="text-gray-500 dark:text-gray-400">Status:</span>
-                  <span class="font-medium text-gray-900 dark:text-white">{{ delivery.status }}</span>
+                  <StatusBadge :status="delivery.status" />
                 </div>
                 <div class="flex justify-between text-xs border-b border-gray-200 dark:border-gray-600 pb-2">
                   <span class="text-gray-500 dark:text-gray-400">Type:</span>
@@ -228,7 +228,7 @@
 </template>
 
 <script>
-import { 
+import {
   X, 
   Package, 
   User, 
@@ -243,6 +243,7 @@ import {
   Zap,
   Info
 } from 'lucide-vue-next'
+import StatusBadge from './StatusBadge.vue'
 
 export default {
   name: 'DeliveryDetailsModal',
@@ -259,7 +260,8 @@ export default {
     DollarSign,
     Truck,
     Zap,
-    Info
+    Info,
+    StatusBadge
   },
   props: {
     delivery: {
@@ -273,17 +275,6 @@ export default {
   },
   emits: ['close'],
   methods: {
-    getStatusColor(status) {
-      const colors = {
-        'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-        'assigned': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-        'in-transit': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-        'delivered': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-        'cancelled': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-      }
-      return colors[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-    },
-
     formatDateTime(dateString) {
       if (!dateString) return 'N/A'
       return new Date(dateString).toLocaleDateString('en-US', {

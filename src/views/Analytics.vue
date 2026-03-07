@@ -102,12 +102,7 @@
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span 
-                  class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  :class="deliveryman.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'"
-                >
-                  {{ deliveryman.status }}
-                </span>
+                <StatusBadge :status="deliveryman.status" />
               </td>
             </tr>
           </tbody>
@@ -120,6 +115,7 @@
 <script>
 import { useDashboardStore } from '../stores/dashboard'
 import { CheckCircle, Clock, Star, UserCheck, User } from 'lucide-vue-next'
+import StatusBadge from '../components/StatusBadge.vue'
 
 export default {
   name: 'Analytics',
@@ -128,7 +124,8 @@ export default {
     Clock,
     Star,
     UserCheck,
-    User
+    User,
+    StatusBadge
   },
   setup() {
     const store = useDashboardStore()

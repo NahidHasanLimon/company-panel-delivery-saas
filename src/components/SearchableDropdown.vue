@@ -3,10 +3,13 @@
     <button 
       type="button"
       @click="toggleDropdown"
-      class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white cursor-pointer flex items-center justify-between"
+      class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white cursor-pointer flex items-center justify-between"
       :class="{ 'ring-1 ring-blue-500 border-blue-500': showDropdown }"
     >
-      <span class="text-left flex-1" :class="{ 'text-gray-500 dark:text-gray-400': !selectedLabel }">
+      <span
+        class="text-left flex-1"
+        :class="selectedLabel ? 'text-gray-900 dark:text-white' : 'text-gray-800 dark:text-gray-100'"
+      >
         {{ selectedLabel || placeholder }}
       </span>
       <svg 
@@ -21,9 +24,10 @@
     </button>
     
     <!-- Dropdown -->
-    <div 
+    <div
       v-if="showDropdown"
-      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-hidden"
+      class="absolute z-[1000] w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden"
+      :class="dropdownPositionClass"
     >
       <!-- Search input inside dropdown -->
       <div class="p-2 border-b border-gray-200 dark:border-gray-600">
@@ -31,21 +35,21 @@
           v-model="searchTerm"
           @input="handleSearch"
           type="text"
-          class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          class="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-600 dark:placeholder-gray-300 dark:bg-gray-700 dark:text-white"
           :placeholder="searchPlaceholder"
           ref="searchInput"
         >
       </div>
       
       <!-- Options container -->
-      <div class="max-h-40 overflow-y-auto">
-        <div v-if="loading" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+      <div class="max-h-48 overflow-y-auto">
+        <div v-if="loading" class="p-3 text-center text-sm text-gray-800 dark:text-gray-100">
           {{ loadingText }}
         </div>
-        <div v-else-if="filteredOptions.length === 0 && searchTerm && searchTerm.trim() !== ''" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div v-else-if="filteredOptions.length === 0 && searchTerm && searchTerm.trim() !== ''" class="p-3 text-center text-sm text-gray-800 dark:text-gray-100">
           {{ noResultsText }}
         </div>
-        <div v-else-if="filteredOptions.length === 0 && options.length === 0" class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div v-else-if="filteredOptions.length === 0 && options.length === 0" class="p-3 text-center text-sm text-gray-800 dark:text-gray-100">
           No options available
         </div>
         <div v-else>
@@ -64,12 +68,12 @@
             :key="getOptionKey(option)"
             type="button"
             @click.stop="selectOption(option)"
-            class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
-            :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': isSelected(option) }"
+            class="w-full text-left px-3 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
+            :class="{ 'bg-blue-100 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100': isSelected(option) }"
           >
             <slot name="option" :option="option" :isSelected="isSelected(option)">
-              <div class="font-medium">{{ getOptionLabel(option) }}</div>
-              <div v-if="getOptionSubLabel(option)" class="text-xs text-gray-500 dark:text-gray-400">
+              <div class="font-semibold">{{ getOptionLabel(option) }}</div>
+              <div v-if="getOptionSubLabel(option)" class="text-xs text-gray-800 dark:text-gray-200">
                 {{ getOptionSubLabel(option) }}
               </div>
             </slot>
@@ -145,10 +149,17 @@ export default {
   data() {
     return {
       showDropdown: false,
-      searchTerm: ''
+      searchTerm: '',
+      openDirection: 'down'
     }
   },
   computed: {
+    dropdownPositionClass() {
+      if (this.openDirection === 'up') {
+        return 'bottom-full mb-1'
+      }
+      return 'top-full mt-1'
+    },
     selectedLabel() {
       if (!this.modelValue) return ''
       
@@ -175,7 +186,7 @@ export default {
       }
       
       const search = this.searchTerm.toLowerCase()
-      const filtered = this.options.filter(option => {
+      return this.options.filter(option => {
         if (!option) return false
         
         return this.searchFields.some(field => {
@@ -183,9 +194,6 @@ export default {
           return value && value.toString().toLowerCase().includes(search)
         })
       })
-      
-      console.log('Search term:', this.searchTerm, 'Filtered options:', filtered.length, 'Total options:', this.options.length)
-      return filtered
     }
   },
   watch: {
@@ -205,14 +213,41 @@ export default {
   },
   mounted() {
     document.addEventListener('click', this.handleOutsideClick)
+    window.addEventListener('resize', this.handleViewportChange)
+    window.addEventListener('scroll', this.handleViewportChange, true)
   },
   beforeUnmount() {
     document.removeEventListener('click', this.handleOutsideClick)
+    window.removeEventListener('resize', this.handleViewportChange)
+    window.removeEventListener('scroll', this.handleViewportChange, true)
   },
   methods: {
+    updateOpenDirection() {
+      const buttonEl = this.$el?.querySelector('button')
+      if (!buttonEl) return
+
+      const rect = buttonEl.getBoundingClientRect()
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+
+      const estimatedDropdownHeight = 280
+      const spaceBelow = viewportHeight - rect.bottom
+      const spaceAbove = rect.top
+
+      if (spaceBelow < estimatedDropdownHeight && spaceAbove > spaceBelow) {
+        this.openDirection = 'up'
+      } else {
+        this.openDirection = 'down'
+      }
+    },
+    handleViewportChange() {
+      if (this.showDropdown) {
+        this.updateOpenDirection()
+      }
+    },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown
       if (this.showDropdown) {
+        this.updateOpenDirection()
         // Reset search when opening dropdown
         this.searchTerm = ''
         this.$emit('search', this.searchTerm)

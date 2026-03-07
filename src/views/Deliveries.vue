@@ -260,12 +260,7 @@
                 <div class="text-xs text-gray-500 dark:text-gray-400">{{ delivery.delivery_mode }}</div>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <span 
-                  class="px-2 py-1 text-xs font-semibold rounded-full"
-                  :class="getStatusColor(delivery.status)"
-                >
-                  {{ delivery.status }}
-                </span>
+                <StatusBadge :status="delivery.status" />
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                 ${{ delivery.amount || '0.00' }}
@@ -322,12 +317,7 @@
               <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(delivery.created_at) }}</p>
             </div>
           </div>
-          <span 
-            class="px-2 py-1 text-xs font-semibold rounded-full"
-            :class="getStatusColor(delivery.status)"
-          >
-            {{ delivery.status }}
-          </span>
+          <StatusBadge :status="delivery.status" />
         </div>
 
         <div class="space-y-2 mb-3">
@@ -444,6 +434,7 @@ import {
 import Pagination from '../components/Pagination.vue'
 import DeliveryDetailsModal from '../components/DeliveryDetailsModal.vue'
 import DatePickerField from '../components/DatePickerField.vue'
+import StatusBadge from '../components/StatusBadge.vue'
 import { useToastStore } from '../stores/toast'
 
 export default {
@@ -462,7 +453,8 @@ export default {
     Check,
     Pagination,
     DeliveryDetailsModal,
-    DatePickerField
+    DatePickerField,
+    StatusBadge
   },
   setup() {
     const toastStore = useToastStore()
@@ -669,17 +661,6 @@ export default {
 
     handlePageChange(page) {
       this.loadDeliveries(page)
-    },
-
-    getStatusColor(status) {
-      const colors = {
-        'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-        'assigned': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-        'in-transit': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-        'delivered': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-        'cancelled': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-      }
-      return colors[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
     },
 
     formatDate(dateString) {

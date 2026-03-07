@@ -109,12 +109,7 @@
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">#{{ invitation.id }}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ invitation.mobile_number || '-' }}</td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  <span
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                    :class="statusClass(invitation.status)"
-                  >
-                    {{ invitation.status || 'N/A' }}
-                  </span>
+                  <StatusBadge :status="invitation.status" />
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ invitation.delivery_man_id || '-' }}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{{ formatDateTime(invitation.expires_at) }}</td>
@@ -233,6 +228,7 @@
 import VerifyInviteOtpModal from '../components/delivery/VerifyInviteOtpModal.vue'
 import Pagination from '../components/Pagination.vue'
 import DatePickerField from '../components/DatePickerField.vue'
+import StatusBadge from '../components/StatusBadge.vue'
 import {
   fetchDeliveryManInvitations,
   inviteDeliveryMan,
@@ -246,7 +242,8 @@ export default {
   components: {
     VerifyInviteOtpModal,
     Pagination,
-    DatePickerField
+    DatePickerField,
+    StatusBadge
   },
   setup() {
     const toastStore = useToastStore()
@@ -357,20 +354,6 @@ export default {
         this.toastStore.error(this.getErrorMessage(error, 'Failed to load invitations'))
       } finally {
         this.loading = false
-      }
-    },
-    statusClass(status) {
-      switch (status) {
-        case 'pending':
-          return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300'
-        case 'verified':
-          return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-        case 'expired':
-          return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-        case 'canceled':
-          return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-        default:
-          return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
       }
     },
     formatDateTime(value) {

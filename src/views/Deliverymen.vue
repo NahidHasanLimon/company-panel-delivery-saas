@@ -78,12 +78,7 @@
                   {{ getAverageRating(deliveryman) }}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  <span
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                    :class="deliveryman.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'"
-                  >
-                    {{ deliveryman.status || 'N/A' }}
-                  </span>
+                  <StatusBadge :status="deliveryman.status" />
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
                   <button
@@ -114,12 +109,7 @@
               <h3 class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ deliveryman.name }}</h3>
               <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ deliveryman.email || 'N/A' }}</p>
             </div>
-            <span
-              class="px-2 py-1 text-xs font-semibold rounded-full"
-              :class="deliveryman.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'"
-            >
-              {{ deliveryman.status || 'N/A' }}
-            </span>
+            <StatusBadge :status="deliveryman.status" />
           </div>
 
           <div class="space-y-2">
@@ -187,6 +177,7 @@ import { User, Phone, Package, Star, List, Grid, Users } from 'lucide-vue-next'
 import FilterForm from '../components/FilterForm.vue'
 import Pagination from '../components/Pagination.vue'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
+import StatusBadge from '../components/StatusBadge.vue'
 import { fetchCompanyDeliverymen, unlinkCompanyDeliveryman } from '../api/delivery'
 import { useToastStore } from '../stores/toast'
 
@@ -202,7 +193,8 @@ export default {
     Users,
     FilterForm,
     Pagination,
-    ConfirmDialog
+    ConfirmDialog,
+    StatusBadge
   },
   setup() {
     const toastStore = useToastStore()

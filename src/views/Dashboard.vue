@@ -136,12 +136,7 @@
                 </div>
               </div>
               <div class="text-right">
-                <span 
-                  class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  :class="getStatusColor(delivery.status)"
-                >
-                  {{ delivery.status }}
-                </span>
+                <StatusBadge :status="delivery.status" />
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${{ delivery.amount }}</p>
               </div>
             </div>
@@ -212,6 +207,7 @@
 <script>
 import { useDashboardStore } from '../stores/dashboard'
 import NotificationPermissionBanner from '../components/NotificationPermissionBanner.vue'
+import StatusBadge from '../components/StatusBadge.vue'
 import { 
   Package, 
   UserCheck, 
@@ -229,6 +225,7 @@ export default {
   name: 'Dashboard',
   components: {
     NotificationPermissionBanner,
+    StatusBadge,
     Package,
     UserCheck,
     Users,
@@ -283,17 +280,6 @@ export default {
     }
   },
   methods: {
-    getStatusColor(status) {
-      const colors = {
-        'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-        'assigned': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-        'in-transit': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-        'in_progress': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-        'completed': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-        'cancelled': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-      }
-      return colors[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-    },
     getActivityIcon(type) {
       const icons = {
         'delivery': 'Package',

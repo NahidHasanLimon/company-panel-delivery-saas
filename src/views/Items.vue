@@ -54,6 +54,7 @@
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Code</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Unit</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Unit Price</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Notes</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
@@ -65,14 +66,10 @@
                 <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ item.name }}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ item.code || 'N/A' }}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ item.unit || 'N/A' }}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ formatUnitPrice(item) }}</td>
                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-white max-w-[260px] truncate">{{ item.notes || 'N/A' }}</td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  <span
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                    :class="item.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'"
-                  >
-                    {{ item.is_active ? 'Active' : 'Inactive' }}
-                  </span>
+                  <StatusBadge :status="item.is_active ? 'active' : 'inactive'" />
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{{ formatDate(item.created_at) }}</td>
                 <td class="px-4 py-3 whitespace-nowrap">
@@ -200,6 +197,18 @@
               >
               <p v-if="formErrors.unit" class="mt-1 text-[11px] text-red-600">{{ formErrors.unit }}</p>
             </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Unit Price</label>
+              <input
+                v-model.number="form.unit_price"
+                type="number"
+                min="0"
+                step="0.01"
+                class="w-full rounded-md border border-slate-300 px-3 py-2 text-xs"
+                :disabled="isViewMode"
+              >
+              <p v-if="formErrors.unit_price" class="mt-1 text-[11px] text-red-600">{{ formErrors.unit_price }}</p>
+            </div>
           </div>
 
           <div>
@@ -275,6 +284,7 @@
 import { Eye, Pencil, Trash2, Check, X, Loader2 } from 'lucide-vue-next'
 import Pagination from '../components/Pagination.vue'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
+import StatusBadge from '../components/StatusBadge.vue'
 import { useToastStore } from '../stores/toast'
 import { listItems, getItem, createItem, updateItem, deleteItem } from '../api/items'
 
@@ -288,7 +298,8 @@ export default {
     X,
     Loader2,
     Pagination,
-    ConfirmDialog
+    ConfirmDialog,
+    StatusBadge
   },
   setup() {
     const toastStore = useToastStore()
@@ -320,6 +331,7 @@ export default {
         name: '',
         code: '',
         unit: '',
+        unit_price: null,
         notes: '',
         is_active: true
       },
@@ -374,6 +386,19 @@ export default {
       const date = new Date(value)
       if (Number.isNaN(date.getTime())) return value
       return date.toLocaleDateString()
+    },
+    getItemUnitPrice(item) {
+      if (!item || typeof item !== 'object') return null
+      const candidates = [item.unit_price, item.price, item.selling_price, item.sale_price, item.mrp]
+      const found = candidates.find((value) => value !== undefined && value !== null && value !== '')
+      if (found === undefined) return null
+      const parsed = Number(found)
+      return Number.isNaN(parsed) ? null : parsed
+    },
+    formatUnitPrice(item) {
+      const price = this.getItemUnitPrice(item)
+      if (price === null) return 'N/A'
+      return price.toFixed(2)
     },
     applyQueryToState(query) {
       this.filters.search = typeof query.search === 'string' ? query.search : ''
@@ -471,6 +496,7 @@ export default {
         name: '',
         code: '',
         unit: '',
+        unit_price: null,
         notes: '',
         is_active: true
       }
@@ -483,6 +509,7 @@ export default {
         name: item?.name || '',
         code: item?.code || '',
         unit: item?.unit || '',
+        unit_price: this.getItemUnitPrice(item),
         notes: item?.notes || '',
         is_active: Boolean(item?.is_active)
       }
@@ -492,12 +519,14 @@ export default {
         name: (base.name || '').trim(),
         code: (base.code || '').trim(),
         unit: (base.unit || '').trim(),
+        unit_price: base.unit_price === '' || base.unit_price === null || base.unit_price === undefined ? null : Number(base.unit_price),
         notes: (base.notes || '').trim(),
         is_active: Boolean(base.is_active)
       }
       if (!payload.code) delete payload.code
       if (!payload.unit) delete payload.unit
       if (!payload.notes) delete payload.notes
+      if (payload.unit_price === null || Number.isNaN(payload.unit_price)) delete payload.unit_price
       return payload
     },
     openCreateModal() {
@@ -571,6 +600,10 @@ export default {
 
       if (!payload.name) {
         this.formErrors.name = 'Name is required.'
+        return
+      }
+      if (payload.unit_price !== undefined && payload.unit_price < 0) {
+        this.formErrors.unit_price = 'Unit price must be 0 or greater.'
         return
       }
 
