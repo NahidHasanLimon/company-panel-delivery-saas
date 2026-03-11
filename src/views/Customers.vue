@@ -92,6 +92,7 @@
                 <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Address</th>
                 <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Customer Code</th>
                 <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
+                <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -102,6 +103,14 @@
                 <td class="px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 max-w-[220px] truncate">{{ customer.address || '-' }}</td>
                 <td class="px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200">{{ customer.customer_code || '-' }}</td>
                 <td class="px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300">{{ formatDate(customer.created_at) }}</td>
+                <td class="px-4 py-2.5 text-sm">
+                  <button
+                    class="rounded border border-gray-300 px-2 py-1 text-xs font-medium text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700"
+                    @click="openAddressModal(customer)"
+                  >
+                    Addresses
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -125,13 +134,66 @@
         @page-change="handlePageChange"
       />
     </template>
+
+    <div
+      v-if="showAddressModal"
+      class="fixed inset-0 z-[1100] flex items-center justify-center bg-black/40 p-4"
+      @click.self="closeAddressModal"
+    >
+      <div class="w-full max-w-3xl rounded-xl border border-gray-200 bg-white p-4 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+        <div class="mb-3 flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Saved Addresses</h3>
+            <p class="text-xs text-gray-700 dark:text-gray-200">{{ selectedCustomer?.name || '-' }}</p>
+          </div>
+          <button class="text-sm text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white" @click="closeAddressModal">
+            Close
+          </button>
+        </div>
+
+        <div v-if="addressesLoading" class="py-8 text-center text-sm text-gray-700 dark:text-gray-200">
+          Loading addresses...
+        </div>
+
+        <div v-else-if="customerAddresses.length" class="max-h-[65vh] overflow-y-auto">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Type</th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Label</th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Address</th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Latitude</th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Longitude</th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Created</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                <tr v-for="address in customerAddresses" :key="address.id">
+                  <td class="px-3 py-2 text-xs text-gray-900 dark:text-white">{{ address.address_type || '-' }}</td>
+                  <td class="px-3 py-2 text-xs text-gray-900 dark:text-white">{{ address.label || '-' }}</td>
+                  <td class="px-3 py-2 text-xs text-gray-900 dark:text-white max-w-[360px]">{{ address.address || '-' }}</td>
+                  <td class="px-3 py-2 text-xs text-gray-900 dark:text-white">{{ address.latitude ?? '-' }}</td>
+                  <td class="px-3 py-2 text-xs text-gray-900 dark:text-white">{{ address.longitude ?? '-' }}</td>
+                  <td class="px-3 py-2 text-xs text-gray-600 dark:text-gray-300">{{ formatDate(address.created_at) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div v-else class="py-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          No saved addresses found for this customer.
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Pagination from '../components/Pagination.vue'
 import { useToastStore } from '../stores/toast'
-import { listCompanyCustomers } from '../api/customers'
+import { listCompanyCustomers, fetchCustomerAddresses } from '../api/customers'
 
 export default {
   name: 'Customers',
@@ -147,6 +209,10 @@ export default {
       loading: false,
       syncingRoute: false,
       customers: [],
+      showAddressModal: false,
+      addressesLoading: false,
+      selectedCustomer: null,
+      customerAddresses: [],
       filters: {
         name: '',
         email: '',
@@ -302,6 +368,31 @@ export default {
       this.currentPage = page
       await this.syncRouteQuery()
       await this.fetchCustomers()
+    },
+    async openAddressModal(customer) {
+      this.showAddressModal = true
+      this.addressesLoading = true
+      this.selectedCustomer = customer
+      this.customerAddresses = []
+      try {
+        const response = await fetchCustomerAddresses(customer.id)
+        if (response?.success) {
+          this.customerAddresses = Array.isArray(response.data) ? response.data : []
+        } else {
+          this.toastStore.warning(response?.message || 'Failed to fetch customer addresses')
+        }
+      } catch (error) {
+        const message = error?.response?.data?.message || 'Failed to fetch customer addresses'
+        this.toastStore.error(message)
+      } finally {
+        this.addressesLoading = false
+      }
+    },
+    closeAddressModal() {
+      this.showAddressModal = false
+      this.addressesLoading = false
+      this.selectedCustomer = null
+      this.customerAddresses = []
     }
   }
 }

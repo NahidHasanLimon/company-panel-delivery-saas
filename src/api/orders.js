@@ -39,3 +39,13 @@ export const fetchOrderDetails = async (orderId) => {
     throw error
   }
 }
+
+export const createOrderDelivery = async (orderId, payload) => {
+  try {
+    const response = await apiClient.post(`/api/company/orders/${orderId}/delivery`, payload)
+    return response.data
+  } catch (error) {
+    console.error('Error creating delivery from order:', error)
+    throw error
+  }
+}

@@ -36,6 +36,32 @@ body {
   --panel-muted: #94a3b8;
 }
 
+/* Consistent non-editable field style for order module */
+.order-disabled-field {
+  background-color: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  border-style: dashed !important;
+  color: #475569 !important;
+  cursor: not-allowed !important;
+  box-shadow: inset 0 0 0 1px rgb(148 163 184 / 0.35);
+}
+
+.order-disabled-field::placeholder {
+  color: #64748b !important;
+}
+
+.dark .order-disabled-field {
+  background-color: #1e293b !important;
+  border-color: #64748b !important;
+  border-style: dashed !important;
+  color: #cbd5e1 !important;
+  box-shadow: inset 0 0 0 1px rgb(100 116 139 / 0.45);
+}
+
+.dark .order-disabled-field::placeholder {
+  color: #94a3b8 !important;
+}
+
 .app-shell {
   background: var(--panel-bg);
 }
